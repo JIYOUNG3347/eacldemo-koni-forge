@@ -1,0 +1,100 @@
+Copyright (c) 2026 Korea Institute of Science and Technology Information (KISTI),
+Large-scale AI Research Center. All rights reserved.
+
+저작권 (c) 2026 한국과학기술정보연구원(KISTI) 초거대AI연구센터.
+모든 권리 보유.
+
+================================================================================
+PROPRIETARY — ALL RIGHTS RESERVED / 독점 — 모든 권리 보유
+================================================================================
+
+[English]
+
+THIS IS NOT OPEN-SOURCE SOFTWARE. No licence, express or implied, is granted
+by the public availability of this repository.
+
+1. SCOPE
+
+   This repository contains only the landing page for a public demonstration of
+   KONI-Forge. The KONI-Forge system itself is not contained in this repository
+   and is licensed separately; nothing here grants any right to that system.
+
+2. NO RIGHTS GRANTED
+
+   The contents of this repository may not be copied, modified, distributed,
+   publicly displayed, sublicensed, or used commercially, in whole or in part,
+   by any means, without the prior written permission of KISTI. Viewing this
+   repository does not grant any of these rights.
+
+3. THE DEMONSTRATION
+
+   Access to the running demonstration linked from this page is a limited,
+   revocable permission to evaluate the system for non-commercial research or
+   academic purposes. It is NOT a licence to the software.
+
+   The following are prohibited without prior written permission of KISTI:
+
+     (a) any commercial use of the system or of its outputs;
+     (b) redistribution, resale, or sublicensing of the system, its outputs,
+         or any part of either;
+     (c) reverse engineering, decompilation, or disassembly;
+     (d) extraction of model weights, source code, prompts, or configuration;
+     (e) automated or bulk access, or access to accounts, data, or functions
+         other than those assigned to the user.
+
+   The demonstration is provided "AS IS", without warranty of any kind, and may
+   be modified, suspended, or withdrawn at any time without notice.
+
+4. NATIONAL R&D
+
+   KONI-Forge may be subject to the Act on the Innovation of National Research
+   and Development of the Republic of Korea and related regulations. Any use,
+   transfer, or licensing may require a separate technology transfer or
+   licensing agreement with KISTI.
+
+--------------------------------------------------------------------------------
+
+[한국어]
+
+본 저장소는 오픈소스가 아닙니다. 저장소가 공개되어 있다는 사실만으로 어떠한
+명시적·묵시적 라이선스도 부여되지 않습니다.
+
+1. 범위
+
+   본 저장소는 KONI-Forge 공개 시연을 위한 안내 페이지만을 포함합니다.
+   KONI-Forge 시스템 자체는 본 저장소에 포함되어 있지 않으며 별도로 관리됩니다.
+   본 문서는 해당 시스템에 대한 어떠한 권리도 부여하지 않습니다.
+
+2. 권리 불부여
+
+   KISTI의 사전 서면 허락 없이 본 저장소의 내용을 전부 또는 일부라도 복제, 수정,
+   배포, 공중송신, 전시, 재라이선스하거나 상업적으로 이용할 수 없습니다.
+   저장소를 열람하는 것만으로는 위 권리가 발생하지 않습니다.
+
+3. 시연에 관하여
+
+   안내 페이지에 연결된 시연 시스템에 대한 접근은 비상업적 연구·학술 목적의
+   평가를 위해 부여되는 제한적이고 언제든 철회 가능한 이용 허가이며,
+   소프트웨어에 대한 라이선스가 아닙니다.
+
+   KISTI의 사전 서면 허락 없이 다음 행위를 금지합니다:
+
+     (가) 시스템 또는 그 산출물의 일체의 상업적 이용
+     (나) 시스템·산출물의 재배포, 판매, 재라이선스
+     (다) 역설계, 역컴파일, 역어셈블
+     (라) 모델 가중치, 소스코드, 프롬프트, 설정의 추출
+     (마) 자동화·대량 접근, 또는 이용자에게 배정되지 않은 계정·데이터·기능에
+          대한 접근
+
+   시연 시스템은 어떠한 보증도 없이 "있는 그대로" 제공되며, 사전 통지 없이
+   변경·중단·철회될 수 있습니다.
+
+4. 국가연구개발
+
+   KONI-Forge는 국가연구개발혁신법 및 관련 규정의 적용을 받을 수 있으며,
+   이용·이전·라이선스에는 KISTI와의 별도 기술이전 또는 라이선스 계약이 필요할
+   수 있습니다.
+
+================================================================================
+문의 / Enquiries: KISTI 초거대AI연구센터
+================================================================================
