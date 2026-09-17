@@ -3,246 +3,265 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>KONI-Forge — Live Demo</title>
+<title>KONI-Forge — System Demonstration</title>
+<meta name="description" content="KONI-Forge: a platform that builds domain-specialised language models from raw documents, routed by a measurement of what the base model already knows." />
 <!--
-  Landing page for the KONI-Forge live demo.
+  Landing page for the KONI-Forge demonstration.
 
-  WHY THIS PAGE EXISTS. The demo runs on lab hardware reached through a
-  Cloudflare quick tunnel, whose address is random and changes whenever the
-  tunnel restarts. A paper cannot cite an address like that. This page has a
-  permanent GitHub Pages URL and forwards to whatever the current address is,
-  so the citation stays alive.
+  WHY THIS PAGE EXISTS. The system runs on lab hardware reached through a tunnel
+  whose address changes whenever it restarts. A paper cannot cite an address like
+  that. This page has a permanent URL and points at whatever the current address
+  is, so the citation stays alive.
 
-  TO UPDATE after the tunnel restarts: change DEMO_URL below, commit, push.
-  GitHub Pages redeploys in about a minute. Or run, from the demo host:
+  TO UPDATE after the tunnel restarts: change DEMO_URL at the bottom of this
+  file, commit, push. Or, from the demo host:
       ./scripts/update-landing.sh <new-url>
 -->
 <style>
   :root {
-    --bg: #fbfbfa;
-    --fg: #16161a;
-    --muted: #6b6b76;
-    --line: #e6e6e3;
-    --card: #ffffff;
-    --accent: #2a5bd7;
-    --ok: #1a7f52;
-    --warn-bg: #fff8e6;
-    --warn-line: #f0dca8;
-    --warn-fg: #7a5a12;
+    --bg:#fcfcfb; --fg:#15161a; --muted:#65656f; --faint:#8a8a94;
+    --line:#e4e4e0; --line-soft:#eeeeea; --card:#ffffff;
+    --link:#1f4fd8; --ok:#137a4d; --stop:#b0392c;
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #131316; --fg: #f2f2f0; --muted: #a0a0ab; --line: #2b2b31;
-      --card: #1b1b1f; --accent: #7ba2ff; --ok: #5fd39b;
-      --warn-bg: #2a2413; --warn-line: #4a3f1d; --warn-fg: #e3c777;
+      --bg:#121317; --fg:#ececed; --muted:#9a9aa4; --faint:#7a7a85;
+      --line:#292a30; --line-soft:#212228; --card:#191a1f;
+      --link:#8ba8ff; --ok:#4fc98c; --stop:#ff8b7a;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #131316; --fg: #f2f2f0; --muted: #a0a0ab; --line: #2b2b31;
-    --card: #1b1b1f; --accent: #7ba2ff; --ok: #5fd39b;
-    --warn-bg: #2a2413; --warn-line: #4a3f1d; --warn-fg: #e3c777;
+    --bg:#121317; --fg:#ececed; --muted:#9a9aa4; --faint:#7a7a85;
+    --line:#292a30; --line-soft:#212228; --card:#191a1f;
+    --link:#8ba8ff; --ok:#4fc98c; --stop:#ff8b7a;
   }
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:15px/1.65 var(--sans); -webkit-font-smoothing:antialiased;
   }
-  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 20px 72px; }
+  a{color:var(--link)}
+  .wrap{max-width:680px; margin:0 auto; padding:64px 22px 80px}
 
-  header { margin-bottom: 36px; }
-  .eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--muted); margin: 0 0 12px;
+  /* ── masthead ── */
+  .kicker{
+    font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--faint); margin:0 0 14px;
   }
-  h1 {
-    margin: 0 0 10px; font-size: clamp(28px, 6vw, 40px); line-height: 1.12;
-    letter-spacing: -.03em; font-weight: 800;
+  h1{
+    margin:0 0 8px; font-family:var(--serif); font-weight:600;
+    font-size:clamp(30px,6.5vw,42px); line-height:1.1; letter-spacing:-.015em;
   }
-  .tagline { margin: 0; color: var(--muted); font-size: 16px; max-width: 54ch; }
+  .sub{margin:0 0 6px; font-size:16.5px; color:var(--muted); line-height:1.5}
+  .affil{margin:0; font-size:13.5px; color:var(--faint)}
 
-  .cta {
-    display: block; margin: 28px 0 10px; padding: 16px 22px;
-    background: var(--fg); color: var(--bg); border-radius: 12px;
-    text-decoration: none; font-weight: 700; font-size: 16px; text-align: center;
-    transition: transform .12s ease, opacity .12s ease;
-  }
-  .cta:hover { transform: translateY(-1px); opacity: .9; }
-  .cta.disabled { background: var(--line); color: var(--muted); pointer-events: none; }
-  .cta-sub { margin: 0 0 32px; font-size: 13px; color: var(--muted); text-align: center; }
+  hr.rule{border:0; border-top:1px solid var(--line); margin:34px 0}
 
-  .creds {
-    display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: center;
-    margin: 0 0 32px; padding: 14px 18px;
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  /* ── the one thing this page is for ── */
+  .gate{
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    background:var(--card); margin:30px 0 34px;
   }
-  .creds div { font-size: 13px; }
-  .creds b { font-weight: 600; color: var(--muted); margin-right: 7px; font-size: 12px; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 12.5px; background: var(--bg); border: 1px solid var(--line);
-    border-radius: 5px; padding: 1.5px 6px;
+  .gate-note{
+    padding:13px 18px; border-bottom:1px solid var(--line-soft);
+    font-size:13px; color:var(--muted); background:linear-gradient(0deg,transparent,rgba(127,127,127,.03));
+  }
+  .gate-note b{color:var(--fg); font-weight:650}
+  .gate-body{padding:18px}
+  .go{
+    display:block; padding:15px 20px; border-radius:9px;
+    background:var(--fg); color:var(--bg); text-decoration:none;
+    font-size:15.5px; font-weight:650; text-align:center; letter-spacing:-.01em;
+    transition:opacity .12s ease, transform .12s ease;
+  }
+  .go:hover{opacity:.88; transform:translateY(-1px)}
+  .go.off{background:var(--line); color:var(--faint); pointer-events:none; font-weight:600}
+  .go-sub{margin:11px 0 0; font-size:12.5px; color:var(--faint); text-align:center}
+
+  .cred{
+    margin:16px 0 0; padding-top:15px; border-top:1px dashed var(--line);
+    display:grid; grid-template-columns:auto 1fr; gap:7px 14px;
+    font-size:13.5px; align-items:baseline;
+  }
+  .cred dt{color:var(--muted); font-size:12.5px}
+  .cred dd{margin:0}
+  code, .k{
+    font-family:var(--mono); font-size:12.5px;
+    background:rgba(127,127,127,.1); border-radius:4px; padding:1.5px 6px;
   }
 
-  h2 {
-    margin: 36px 0 14px; font-size: 13px; font-weight: 700;
-    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  /* ── prose ── */
+  h2{
+    margin:38px 0 13px; font-size:11.5px; font-weight:700;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
   }
+  .abstract{font-family:var(--serif); font-size:16px; line-height:1.72}
+  .abstract p{margin:0 0 15px}
+  .abstract p:last-child{margin-bottom:0}
+  p{margin:0 0 14px}
 
-  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .card {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: 10px; padding: 16px 18px;
+  /* ── pipeline ── */
+  ol.stages{margin:0; padding:0; list-style:none; counter-reset:s}
+  ol.stages li{
+    counter-increment:s; position:relative; padding:0 0 15px 34px;
+    border-left:1px solid var(--line); margin-left:9px;
   }
-  .card h3 { margin: 0 0 6px; font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; }
-  .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+  ol.stages li:last-child{border-left-color:transparent; padding-bottom:0}
+  ol.stages li::before{
+    content:counter(s); position:absolute; left:-9.5px; top:1px;
+    width:19px; height:19px; border-radius:50%;
+    background:var(--bg); border:1px solid var(--line); color:var(--faint);
+    font:600 10.5px/17px var(--sans); text-align:center;
+  }
+  ol.stages b{display:block; font-size:14.5px; font-weight:650; margin-bottom:2px}
+  ol.stages span{font-size:13.5px; color:var(--muted)}
 
-  ol.steps { margin: 0; padding-left: 20px; }
-  ol.steps li { margin-bottom: 9px; font-size: 14.5px; }
-  ol.steps li span { color: var(--muted); font-size: 13.5px; }
+  table.facts{width:100%; border-collapse:collapse; font-size:13.5px}
+  table.facts td{padding:7px 0; border-top:1px solid var(--line-soft); vertical-align:top}
+  table.facts td:first-child{width:38%; color:var(--muted); padding-right:16px}
 
-  .note {
-    margin-top: 32px; padding: 14px 18px; font-size: 13.5px; line-height: 1.6;
-    background: var(--warn-bg); border: 1px solid var(--warn-line);
-    color: var(--warn-fg); border-radius: 10px;
-  }
-  .note b { font-weight: 700; }
+  .terms{font-size:13.5px}
+  .terms ul{margin:0 0 12px; padding-left:19px}
+  .terms li{margin-bottom:5px}
+  .yes{color:var(--ok); font-weight:650}
+  .no{color:var(--stop); font-weight:650}
+  .fine{font-size:12.5px; color:var(--muted); line-height:1.6}
 
-  .terms {
-    margin-top: 36px; padding: 18px 20px;
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-  }
-  .terms h2 { margin-top: 0; }
-  .terms ul { margin: 0 0 14px; padding-left: 20px; }
-  .terms li { font-size: 13.5px; margin-bottom: 6px; }
-  .terms li b { font-weight: 650; }
-  .terms .allow { color: var(--ok); font-weight: 700; }
-  .terms .deny { color: #c0392b; font-weight: 700; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .terms .deny { color: #ff8b7a; }
-  }
-  :root[data-theme="dark"] .terms .deny { color: #ff8b7a; }
-  .terms p.small { font-size: 12.5px; color: var(--muted); margin: 0; }
-
-  footer {
-    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
-    font-size: 12.5px; color: var(--muted);
-  }
-  footer a { color: var(--accent); }
+  footer{margin-top:46px; padding-top:18px; border-top:1px solid var(--line);
+         font-size:12px; color:var(--faint); line-height:1.7}
+  footer p{margin:0 0 5px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <p class="eyebrow">System Demonstration</p>
-    <h1>KONI-Forge</h1>
-    <p class="tagline">
-      An LLM development platform built on four measurement-driven components:
-      knowledge-boundary diagnosis, data augmentation, in-training safety
-      monitoring, and confidence-based ensembling.
+  <p class="kicker">System Demonstration</p>
+  <h1>KONI-Forge</h1>
+  <p class="sub">Building domain-specialised language models from raw documents,
+     routed by a measurement of what the base model already knows.</p>
+  <!-- ANONYMITY: remove this line if the venue requires anonymous review. -->
+  <p class="affil">Large-scale AI Research Center, Korea Institute of Science and
+     Technology Information (KISTI)</p>
+
+  <div class="gate">
+    <p class="gate-note">
+      <b>This page is not the system.</b> It is a fixed address that points to the
+      running instance, which moves. Follow the link to use KONI-Forge.
     </p>
-  </header>
-
-  <a id="launch" class="cta" href="#">Open the live demo →</a>
-  <p class="cta-sub" id="launch-sub">Opens in this tab. No installation required.</p>
-
-  <div class="creds">
-    <div><b>Username</b><code>demo</code></div>
-    <div><b>Password</b><code>eacl2026-demo</code></div>
-    <div><b>Interface</b><code>English</code></div>
-  </div>
-
-  <h2>What you can try</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Knowledge boundary diagnosis</h3>
-      <p>Upload documents and measure how much of that knowledge the base model
-         already holds — the measurement decides what happens next.</p>
-    </div>
-    <div class="card">
-      <h3>Routed pipeline</h3>
-      <p>High coverage routes to retrieval; low coverage routes to fine-tuning.
-         The route is derived from the measurement, not from a preset.</p>
-    </div>
-    <div class="card">
-      <h3>In-training monitoring</h3>
-      <p>Benchmarks run between training rounds. A significant regression halves
-         the learning rate or stops training and rolls back.</p>
-    </div>
-    <div class="card">
-      <h3>Agent orchestration</h3>
-      <p>Seven specialist agents drive the stages through a shared state and a
-         planner that selects the next step from that state.</p>
+    <div class="gate-body">
+      <a id="go" class="go" href="#">Open the live system →</a>
+      <p class="go-sub" id="go-sub">Sign in with the account below.</p>
+      <dl class="cred">
+        <dt>Username</dt><dd><span class="k">demo</span></dd>
+        <dt>Password</dt><dd><span class="k">eacl2026-demo</span></dd>
+        <dt>Interface</dt><dd>English</dd>
+      </dl>
     </div>
   </div>
 
-  <h2>Suggested path (about 15 minutes)</h2>
-  <ol class="steps">
-    <li>Sign in and upload two or three English PDFs.
-        <span>Documents must be in English — the pipeline runs in English.</span></li>
-    <li>Let the pipeline index them and run the boundary diagnosis.
-        <span>You will see a coverage percentage and the route it implies.</span></li>
-    <li>Watch question generation, preprocessing, and training proceed.
-        <span>Each stage reports what it did, and what it skipped.</span></li>
-    <li>Open the evaluation report.
-        <span>Layers that were not measured are marked as such rather than scored.</span></li>
+  <h2>Abstract</h2>
+  <div class="abstract">
+    <p>Adapting a language model to a specialised domain usually begins with a
+    guess: fine-tune, or retrieve, or both. KONI-Forge replaces that guess with a
+    measurement. Given a collection of documents, it indexes them for retrieval
+    and then probes the base model against their content to estimate how much of
+    that knowledge the model already holds, and how often it fabricates an answer
+    when it does not. The resulting coverage and hallucination rates decide the
+    route: retrieval alone above 70&nbsp;% coverage, supervised fine-tuning below
+    50&nbsp;%, and a hybrid between — with a high hallucination rate pulling the
+    verdict down a step regardless of coverage.</p>
+
+    <p>When the route calls for training, the platform generates question–answer
+    pairs from the same documents, filters and augments them, and runs the
+    fine-tune. Training is watched from the inside: each checkpoint is benchmarked
+    during the run, and a significant regression halves the learning rate, stops
+    training, or rolls back to the last checkpoint known to be safe. The finished
+    model is evaluated against public benchmarks, against the source documents
+    themselves, and — where retrieval is part of the answer — for faithfulness to
+    the retrieved context.</p>
+
+    <p>The stages are driven by specialist agents that read a shared state and
+    choose the next step from it, rather than following a fixed script. Two modes
+    are available: an autonomous one that runs the pipeline end to end, and a
+    guided one that stops for confirmation at each decision. The system runs
+    entirely on local hardware with a local model provider, so documents need not
+    leave the machine.</p>
+  </div>
+
+  <h2>What happens when you upload documents</h2>
+  <ol class="stages">
+    <li><b>Retrieval indexing</b>
+        <span>Text is extracted per page, chunked, embedded, and stored with its
+        source file and page number, so later answers can be traced back.</span></li>
+    <li><b>Knowledge boundary detection</b>
+        <span>Probe questions are generated from the indexed chunks and put to the
+        base model. Coverage and hallucination rates are reported per category.</span></li>
+    <li><b>Route selection</b>
+        <span>The measurement, not a preset, decides between retrieval,
+        fine-tuning, and a hybrid of the two.</span></li>
+    <li><b>Dataset generation</b>
+        <span>Question–answer pairs are generated from the documents, weighted
+        toward the categories the diagnosis found weak.</span></li>
+    <li><b>Preprocessing</b>
+        <span>Filtering and augmentation. Each artefact is kept as a separate
+        file, so every step remains inspectable and reversible.</span></li>
+    <li><b>Training and evaluation</b>
+        <span>LoRA, full fine-tuning, or preference training, monitored between
+        rounds; then benchmarked and reported.</span></li>
   </ol>
 
-  <div class="note">
-    <b>This is a live system on shared lab hardware.</b> One GPU serves every
-    visitor, so a training run started by someone else will queue yours behind
-    it. Please keep runs small — the available models are 0.5B–1B parameters,
-    which is what this hardware supports.
-    Some features are disabled in the public build.
-  </div>
+  <h2>This instance</h2>
+  <table class="facts">
+    <tr><td>Hardware</td><td>One NVIDIA RTX 4000 Ada (20&nbsp;GB), shared by all visitors</td></tr>
+    <tr><td>Models</td><td>0.5B–1B parameters — what this hardware supports</td></tr>
+    <tr><td>Documents</td><td>Upload your own; English only, as the pipeline runs in English</td></tr>
+    <tr><td>Availability</td><td>Research hardware, not a hosted service. It is switched off between sessions</td></tr>
+    <tr><td>Restrictions</td><td>Some features of the full system are disabled in this public build</td></tr>
+  </table>
 
-  <section class="terms">
-    <h2>Terms of use</h2>
-    <p style="margin-top:0;font-size:13.5px;">
-      KONI-Forge is proprietary software of KISTI. Access to this demonstration
-      is a limited, revocable permission to evaluate the system — it is not a
-      licence to the software.
-    </p>
+  <p class="fine" style="margin-top:14px">
+    A training run started by one visitor will queue the next one behind it.
+    Please keep runs small.
+  </p>
+
+  <hr class="rule" />
+
+  <h2>Terms of use</h2>
+  <div class="terms">
+    <p>KONI-Forge is proprietary software. Access to this demonstration is a
+    limited, revocable permission to evaluate the system — <b>not a licence to the
+    software</b>.</p>
     <ul>
-      <li><span class="allow">Permitted</span> — evaluating the system for
-          non-commercial research or academic review, using your own documents.</li>
-      <li><span class="deny">Not permitted</span> — <b>any commercial use</b>;
-          redistribution or resale of the system, its outputs, or any part of it;
-          reverse engineering; extracting model weights, source code, or
-          configuration; automated or bulk access; attempting to reach accounts,
-          data, or functions other than your own.</li>
+      <li><span class="yes">Permitted</span> — evaluation for non-commercial
+          research or academic review, using your own documents.</li>
+      <li><span class="no">Not permitted</span> — any commercial use;
+          redistribution or resale of the system or its outputs; reverse
+          engineering; extraction of model weights, source code, prompts, or
+          configuration; automated or bulk access; access to accounts or data
+          other than your own.</li>
     </ul>
-    <p class="small">
-      <b>About what you upload:</b> documents you submit are processed and stored
-      on the host machine for the duration of the demonstration and may be visible
-      to other demo users, who share this account. Please do not upload
-      confidential, personal, or otherwise sensitive material.
+    <p class="fine">
+      <b>What you upload.</b> Documents you submit are processed and stored on the
+      host machine and may be visible to other visitors, who share the same
+      account. Do not upload confidential, personal, or otherwise sensitive
+      material. The demonstration is provided as is, without warranty, and may be
+      modified, suspended, or withdrawn at any time.
     </p>
-    <p class="small" style="margin-top:10px;">
-      The demonstration is provided as is, without warranty of any kind, and may
-      be modified, suspended, or withdrawn at any time. Enquiries about licensing
-      or technology transfer should be directed to KISTI.
-    </p>
-  </section>
+  </div>
 
   <footer>
     <p id="status"></p>
-    <p>
-      Demo instance for an EACL system demonstration submission.
-      Source code is not publicly released.
-    </p>
-    <p>
-      © 2026 Korea Institute of Science and Technology Information (KISTI),
-      Large-scale AI Research Center. All rights reserved.
-    </p>
-    <p>
-      This page is licensed under
-      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license noopener" target="_blank">CC&nbsp;BY-NC-ND&nbsp;4.0</a>.
-      The KONI-Forge software itself is proprietary and is not covered by that
-      licence.
-    </p>
+    <p>Source code is not publicly released. Enquiries about licensing or
+       technology transfer should be directed to KISTI.</p>
+    <p>© 2026 Korea Institute of Science and Technology Information (KISTI),
+       Large-scale AI Research Center. All rights reserved.
+       This page is licensed under
+       <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license noopener" target="_blank">CC&nbsp;BY-NC-ND&nbsp;4.0</a>;
+       the software is not covered by that licence.</p>
   </footer>
 
 </div>
@@ -253,24 +272,26 @@
   // ─────────────────────────────────────────────────────────────────────────
 
   (function () {
-    const link = document.getElementById("launch");
-    const sub = document.getElementById("launch-sub");
+    const go = document.getElementById("go");
+    const sub = document.getElementById("go-sub");
     const status = document.getElementById("status");
-    const placeholder = /^https:\/\/PASTE|^$/i.test(DEMO_URL);
 
-    if (placeholder) {
-      // Never present a dead link as a working one. Saying the demo is
-      // offline is honest; a button that goes nowhere is not.
-      link.textContent = "Demo is offline";
-      link.classList.add("disabled");
-      link.removeAttribute("href");
-      sub.textContent = "The demo is not running right now. Please check back later.";
+    if (!DEMO_URL || /^https:\/\/PASTE/i.test(DEMO_URL)) {
+      // Never present a dead link as a working one. Saying the demo is offline
+      // is honest; a button that goes nowhere is not.
+      go.textContent = "The system is offline";
+      go.classList.add("off");
+      go.removeAttribute("href");
+      sub.textContent =
+        "It runs on research hardware and is not always on. Please check back, " +
+        "or contact the authors to arrange a session.";
+      document.querySelector(".cred").style.opacity = ".45";
       return;
     }
 
-    link.href = DEMO_URL;
+    go.href = DEMO_URL;
     try {
-      status.textContent = "Demo endpoint: " + new URL(DEMO_URL).hostname;
+      status.textContent = "Current endpoint: " + new URL(DEMO_URL).hostname;
     } catch (e) {
       /* a malformed URL should not blank the page */
     }
