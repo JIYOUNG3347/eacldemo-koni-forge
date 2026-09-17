@@ -17,18 +17,17 @@
   push. Or, from the demo host:  ./scripts/update-landing.sh <new-url>
 -->
 <style>
-  /* 흰 바탕 한 가지로 간다 — 논문 프로젝트 페이지의 관례이고 사용자가 고른 결정.
-     뷰어의 다크 모드를 따라가지 않으므로 color-scheme 을 명시해 브라우저 기본
-     UI(스크롤바·폼)까지 밝은 쪽으로 맞춘다. */
+  /* 흰 바탕 한 가지로 간다 — 논문 프로젝트 페이지의 관례이고, 사용자가 고른 결
+     정이다. 뷰어의 다크 모드를 따라가지 않으므로 color-scheme 을 명시해 브라우저
+     기본 UI(스크롤바·폼)까지 밝은 쪽으로 맞춘다. */
   :root{
     color-scheme: light;
-    --ink:#1f1f1f;
-    --ink-soft:#5f6368;
-    --ink-faint:#80868b;
-    --line:#e3e3e0;
-    --tint:#f8f9fa;
-    --link:#1a56c4;
-    --accent:#1a73e8;
+    --ink:#1a1a1a;        /* 본문 */
+    --ink-soft:#4a4a4a;   /* 부제·설명 */
+    --ink-faint:#8a8a8a;  /* 캡션·푸터 */
+    --line:#e8e8e8;
+    --tint:#f7f7f6;       /* 옅은 블록 배경 */
+    --link:#1a4fc4;
     --sans: Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif;
     --mono: "Courier New", Courier, monospace;
   }
@@ -36,231 +35,151 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0; background:#fff; color:var(--ink);
-    font:16.5px/1.7 var(--sans);
+    margin:0; background:#ffffff; color:var(--ink);
+    font:17px/1.75 var(--sans);
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   }
   a{color:var(--link); text-decoration:none}
   a:hover{text-decoration:underline}
-  .page{max-width:800px; margin:0 auto; padding:72px 24px 96px}
+
+  .page{max-width:920px; margin:0 auto; padding:78px 28px 96px}
 
   /* ── masthead ─────────────────────────────────────────────── */
+  header.top{margin-bottom:38px}
   h1{
-    margin:0 0 16px; font-size:clamp(34px,7vw,52px); font-weight:700;
-    letter-spacing:-.035em; line-height:1.06;
+    margin:0 0 18px;
+    font-size:clamp(34px,7vw,50px); font-weight:700;
+    letter-spacing:-.033em; line-height:1.08;
   }
-  .hook{
-    margin:0 0 14px; max-width:20em;
-    font-size:clamp(20px,3.4vw,26px); line-height:1.35;
-    font-weight:400; color:var(--ink); letter-spacing:-.018em;
+  .lede{
+    margin:0 0 20px; max-width:44em;
+    font-size:19px; line-height:1.55; color:var(--ink-soft); font-weight:400;
   }
-  .hook b{font-weight:700}
   /* ANONYMITY: remove .affil if the venue requires anonymous review. */
-  .affil{margin:0; font-size:14.5px; color:var(--ink-faint)}
+  .affil{margin:0 0 30px; font-size:15px; color:var(--ink-soft)}
+  .affil .sup{font-size:12px; vertical-align:super; color:var(--ink-faint)}
 
-  /* ── call to action ───────────────────────────────────────── */
-  .cta{
-    margin:36px 0 0; padding:24px 26px;
-    background:var(--tint); border:1px solid var(--line); border-radius:12px;
-  }
-  .cta p{margin:0 0 18px; font-size:15.5px; color:var(--ink-soft); max-width:46em}
-  .links{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .links{display:flex; flex-wrap:wrap; gap:11px; align-items:center}
   .pill{
     display:inline-flex; align-items:center; gap:9px;
-    padding:11px 22px; border-radius:6px;
-    background:var(--accent); color:#fff; font-size:15px; font-weight:700;
-    border:1px solid var(--accent); letter-spacing:.002em;
-    transition:filter .14s ease, box-shadow .14s ease;
+    padding:11px 24px; border-radius:999px;
+    background:#1a1a1a; color:#fff; font-size:15.5px; font-weight:600;
+    letter-spacing:-.005em; border:1px solid #1a1a1a;
+    transition:background .14s ease, border-color .14s ease, transform .14s ease;
   }
-  .pill:hover{filter:brightness(1.08); box-shadow:0 1px 3px rgba(26,115,232,.4); text-decoration:none}
-  .pill.ghost{background:#fff; color:var(--link); border-color:#dadce0; font-weight:600}
-  .pill.ghost:hover{background:#f1f5fd; box-shadow:none}
-  .pill.off{background:#eceff1; color:#9aa0a6; border-color:#eceff1;
-            pointer-events:none; font-weight:600}
-  .pill .dot{width:7px; height:7px; border-radius:50%; background:#34a853;
-             box-shadow:0 0 0 3px rgba(52,168,83,.25)}
+  .pill:hover{background:#000; transform:translateY(-1px); text-decoration:none}
+  .pill.ghost{background:#fff; color:var(--ink); border-color:#d6d6d6}
+  .pill.ghost:hover{background:var(--tint); border-color:#bdbdbd}
+  .pill.off{background:#ededed; color:#9a9a9a; border-color:#ededed;
+            pointer-events:none; font-weight:500}
+  .pill .dot{
+    width:7px; height:7px; border-radius:50%; background:#5bd08a;
+    box-shadow:0 0 0 3px rgba(91,208,138,.22);
+  }
+  .links-note{margin:13px 0 0; font-size:13.5px; color:var(--ink-faint)}
 
-  /* ── the diagram ──────────────────────────────────────────── */
-  .figure{margin:52px 0 0}
-  .flow{
-    display:grid; grid-template-columns:1fr 26px 1.15fr 26px 1.25fr;
-    align-items:center; gap:0;
+  /* 페이지에서 눈이 먼저 닿아야 하는 곳. 가운데 정렬을 풀면 화면이 평평해져
+     아무 데도 시선이 멈추지 않으므로, 여기 하나만 테두리와 배경으로 세운다. */
+  .cta{
+    margin:34px 0 8px; padding:26px 28px;
+    border:1px solid var(--line); border-left:3px solid var(--ink);
+    border-radius:4px; background:var(--tint);
   }
-  .node{
-    border:1px solid var(--line); border-radius:12px; padding:18px 18px 16px;
-    background:#fff; min-height:132px;
-  }
-  .node .cap{
-    font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
-    color:var(--ink-faint); margin:0 0 8px;
-  }
-  .node .big{margin:0; font-size:16px; font-weight:700; line-height:1.35; letter-spacing:-.012em}
-  .node .sm{margin:6px 0 0; font-size:13.5px; color:var(--ink-soft); line-height:1.5}
-  .node.measure{border-color:#c9dcfa; background:#f6f9ff}
-
-  .arrow{display:flex; align-items:center; justify-content:center; color:#c4c7c5}
-  .arrow svg{display:block}
-
-  /* 측정 눈금 — 이 페이지에서 유일하게 색을 쓰는 곳. 시선이 여기 멈춰야 한다. */
-  .gauge{margin:12px 0 0}
-  .gauge .bar{
-    height:7px; border-radius:4px; overflow:hidden; display:flex;
-    background:#e8eaed;
-  }
-  .gauge .seg{height:100%}
-  .gauge .s1{width:50%; background:#f2a58f}
-  .gauge .s2{width:20%; background:#f7cf8a}
-  .gauge .s3{width:30%; background:#8fcfa8}
-  .gauge .ticks{
-    display:flex; justify-content:space-between; margin-top:5px;
-    font:700 10.5px/1 var(--mono); color:var(--ink-faint);
-  }
-
-  .routes{display:flex; flex-direction:column; gap:7px}
-  .route{
-    display:grid; grid-template-columns:62px 1fr; align-items:baseline;
-    gap:10px; padding:8px 12px; border:1px solid var(--line); border-radius:8px;
-  }
-  .route .pct{font:700 12.5px/1.4 var(--mono); color:var(--ink-soft)}
-  .route .what{font-size:14.5px; font-weight:700; letter-spacing:-.01em}
-  .route .why{grid-column:2; font-size:12.5px; color:var(--ink-faint); margin-top:1px}
-  .route.r1{border-left:3px solid #8fcfa8}
-  .route.r2{border-left:3px solid #f7cf8a}
-  .route.r3{border-left:3px solid #f2a58f}
-
-  figcaption{
-    margin:16px 0 0; font-size:13.5px; color:var(--ink-faint); line-height:1.6;
-  }
+  .cta h2{margin:0 0 6px; text-align:left; font-size:19px}
+  .cta p{margin:0 0 18px; font-size:15.5px; color:var(--ink-soft)}
 
   /* ── sections ─────────────────────────────────────────────── */
-  section{margin-top:56px}
-  h2{margin:0 0 16px; font-size:22px; font-weight:700; letter-spacing:-.022em}
-  p{margin:0 0 16px}
-  .abstract p{color:#33363a}
+  section{margin-top:58px}
+  h2{
+    margin:0 0 18px;
+    font-size:23px; font-weight:700; letter-spacing:-.02em;
+  }
+  h3{margin:30px 0 9px; font-size:16.5px; font-weight:650; letter-spacing:-.01em}
+  p{margin:0 0 17px}
+  .abstract p{text-align:justify; hyphens:auto}
 
-  .box{background:var(--tint); border:1px solid var(--line); border-radius:12px; padding:22px 26px}
-  .kv{margin:0; display:grid; grid-template-columns:max-content 1fr; gap:10px 22px;
-      align-items:baseline; font-size:15.5px}
-  .kv dt{color:var(--ink-faint); font-size:13.5px}
+  /* ── credentials ──────────────────────────────────────────── */
+  .box{
+    background:var(--tint); border:1px solid var(--line);
+    border-radius:12px; padding:22px 26px;
+  }
+  .kv{
+    margin:0; display:grid; grid-template-columns:max-content 1fr;
+    gap:10px 20px; align-items:baseline; font-size:15.5px;
+  }
+  .kv dt{color:var(--ink-faint); font-size:13.5px; letter-spacing:.01em}
   .kv dd{margin:0}
-  .mono{font-family:var(--mono); font-size:14px; background:#fff;
-        border:1px solid var(--line); border-radius:5px; padding:2px 8px}
+  code,.mono{
+    font-family:var(--mono); font-size:14px;
+    background:#fff; border:1px solid var(--line); border-radius:5px;
+    padding:2px 8px;
+  }
   .box .hint{margin:16px 0 0; font-size:13.5px; color:var(--ink-faint); line-height:1.6}
 
+  /* ── facts table ──────────────────────────────────────────── */
   table.facts{width:100%; border-collapse:collapse; font-size:15.5px}
-  table.facts th{width:31%; text-align:left; font-weight:400; color:var(--ink-faint);
-                 font-size:14.5px; padding:11px 18px 11px 0; vertical-align:top}
-  table.facts td{padding:11px 0; vertical-align:top; color:#33363a}
+  table.facts th{
+    width:33%; text-align:left; font-weight:500; color:var(--ink-faint);
+    font-size:14.5px; padding:11px 18px 11px 0; vertical-align:top;
+  }
+  table.facts td{padding:11px 0; vertical-align:top; color:var(--ink-soft)}
   table.facts tr + tr th, table.facts tr + tr td{border-top:1px solid var(--line)}
 
+  /* ── terms ────────────────────────────────────────────────── */
   .terms{font-size:15.5px}
   .terms ul{margin:0 0 16px; padding-left:22px}
-  .terms li{margin-bottom:7px; color:#33363a}
-  .yes{color:#137333; font-weight:700}
-  .no{color:#b3261e; font-weight:700}
-  .fine{font-size:13.5px; color:var(--ink-faint); line-height:1.65}
+  .terms li{margin-bottom:7px; color:var(--ink-soft)}
+  .terms li b{color:var(--ink)}
+  .yes{color:#12693f; font-weight:650}
+  .no{color:#a5382b; font-weight:650}
+  .fine{font-size:14px; color:var(--ink-faint); line-height:1.65}
 
-  footer{margin-top:68px; padding-top:24px; border-top:1px solid var(--line);
-         font-size:12.5px; color:var(--ink-faint); line-height:1.75}
-  footer p{margin:0 0 6px}
-
-  /* ── narrow screens: 그림을 세로로 접는다 ──────────────────── */
-  @media (max-width:720px){
-    .flow{grid-template-columns:1fr; gap:0}
-    .node{min-height:0}
-    .arrow{padding:9px 0}
-    .arrow svg{transform:rotate(90deg)}
+  footer{
+    margin-top:72px; padding-top:26px; border-top:1px solid var(--line);
+    font-size:13px; color:var(--ink-faint); line-height:1.75;
   }
+  footer p{margin:0 0 7px}
+
   @media (max-width:520px){
     .page{padding:52px 20px 68px}
     .pill{width:100%; justify-content:center}
-    .kv{grid-template-columns:1fr; gap:2px 0}
-    .kv dd{margin-bottom:10px}
+    .kv{grid-template-columns:1fr; gap:3px 0}
+    .kv dd{margin-bottom:9px}
     table.facts th{width:auto; display:block; padding-bottom:1px}
     table.facts td{display:block; padding-top:0}
     table.facts tr + tr th{border-top:1px solid var(--line); padding-top:11px}
     table.facts tr + tr td{border-top:0}
-    .route{grid-template-columns:1fr}
-    .route .why{grid-column:1}
   }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <header>
+  <header class="top">
     <h1>KONI-Forge</h1>
-    <p class="hook">Most domain adaptation starts with a guess.
-      <b>This one starts with a measurement.</b></p>
+    <p class="lede">
+      Building domain-specialised language models from raw documents — choosing
+      between retrieval and fine-tuning by measuring what the base model already
+      knows.
+    </p>
     <!-- ANONYMITY: remove this line if the venue requires anonymous review. -->
     <p class="affil">Large-scale AI Research Center, Korea Institute of Science
       and Technology Information (KISTI)</p>
+
   </header>
 
   <div class="cta">
+    <h2>Try the system</h2>
     <p id="note">
       This page is a signpost — the system itself runs on our hardware.
       Click the button below to open it, and sign in with the account shown.
     </p>
     <nav class="links">
-      <a id="go" class="pill" href="#"><span class="dot" id="dot"></span>Open the live demo</a>
+      <a id="go" class="pill" href="#"><span class="dot" id="dot"></span>Open the live demo →</a>
       <a class="pill ghost" href="#access">Account details</a>
       <a class="pill ghost" href="#terms">Terms of use</a>
     </nav>
   </div>
-
-  <figure class="figure">
-    <div class="flow">
-      <div class="node">
-        <p class="cap">Input</p>
-        <p class="big">Your documents</p>
-        <p class="sm">PDFs, reports, manuals — indexed for retrieval, page by
-          page.</p>
-      </div>
-
-      <div class="arrow" aria-hidden="true">
-        <svg width="22" height="12" viewBox="0 0 22 12" fill="none">
-          <path d="M0 6h19M15 2l4 4-4 4" stroke="currentColor" stroke-width="1.4"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-
-      <div class="node measure">
-        <p class="cap">Measure</p>
-        <p class="big">How much does the model already know?</p>
-        <div class="gauge">
-          <div class="bar"><i class="seg s1"></i><i class="seg s2"></i><i class="seg s3"></i></div>
-          <div class="ticks"><span>0%</span><span>50</span><span>70</span><span>100</span></div>
-        </div>
-      </div>
-
-      <div class="arrow" aria-hidden="true">
-        <svg width="22" height="12" viewBox="0 0 22 12" fill="none">
-          <path d="M0 6h19M15 2l4 4-4 4" stroke="currentColor" stroke-width="1.4"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-
-      <div class="routes">
-        <div class="route r1">
-          <span class="pct">&ge; 70%</span><span class="what">Retrieval</span>
-          <span class="why">It already knows enough — just give it the source.</span>
-        </div>
-        <div class="route r2">
-          <span class="pct">50–70%</span><span class="what">Hybrid</span>
-          <span class="why">Partial knowledge — train, and retrieve for the rest.</span>
-        </div>
-        <div class="route r3">
-          <span class="pct">&lt; 50%</span><span class="what">Fine-tuning</span>
-          <span class="why">The knowledge is missing — put it into the weights.</span>
-        </div>
-      </div>
-    </div>
-    <figcaption>
-      The route is derived from the measurement, not chosen in advance. A high
-      hallucination rate pulls the verdict down one step regardless of coverage.
-    </figcaption>
-  </figure>
 
   <section>
     <h2>Abstract</h2>
@@ -271,7 +190,10 @@
       and then probes the base model against their content to estimate how much
       of that knowledge the model already holds, and how often it fabricates an
       answer when it does not. The resulting coverage and hallucination rates
-      decide the route.</p>
+      decide the route: retrieval alone above 70&thinsp;% coverage, supervised
+      fine-tuning below 50&thinsp;%, and a hybrid in between — with a high
+      hallucination rate pulling the verdict down a step regardless of
+      coverage.</p>
 
       <p>When the route calls for training, the platform generates
       question–answer pairs from the same documents, filters and augments them,
@@ -292,7 +214,7 @@
   </section>
 
   <section id="access">
-    <h2>Access &amp; account</h2>
+    <h2>Access &amp; Account</h2>
     <div class="box">
       <dl class="kv">
         <dt>Address</dt><dd id="endpoint" class="mono">—</dd>
@@ -301,9 +223,10 @@
         <dt>Interface</dt><dd>English</dd>
       </dl>
       <p class="hint">
-        The address changes when the instance restarts; this page is updated to
-        match, so the button above is always current. Everyone signs in with the
-        same account, so treat anything you upload as visible to other visitors.
+        The address above changes when the instance restarts; this page is
+        updated to match, so the link at the top of this page is always the
+        current one. Everyone signs in with the same account, so treat anything
+        you upload as visible to other visitors.
       </p>
     </div>
   </section>
@@ -331,7 +254,7 @@
   </section>
 
   <section id="terms">
-    <h2>Terms of use</h2>
+    <h2>Terms of Use</h2>
     <div class="terms">
       <p>KONI-Forge is proprietary software. Access to this demonstration is a
       limited, revocable permission to evaluate the system — <b>not a licence to
