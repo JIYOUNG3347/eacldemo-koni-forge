@@ -109,6 +109,22 @@
   }
   .note b { font-weight: 700; }
 
+  .terms {
+    margin-top: 36px; padding: 18px 20px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  }
+  .terms h2 { margin-top: 0; }
+  .terms ul { margin: 0 0 14px; padding-left: 20px; }
+  .terms li { font-size: 13.5px; margin-bottom: 6px; }
+  .terms li b { font-weight: 650; }
+  .terms .allow { color: var(--ok); font-weight: 700; }
+  .terms .deny { color: #c0392b; font-weight: 700; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .terms .deny { color: #ff8b7a; }
+  }
+  :root[data-theme="dark"] .terms .deny { color: #ff8b7a; }
+  .terms p.small { font-size: 12.5px; color: var(--muted); margin: 0; }
+
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
     font-size: 12.5px; color: var(--muted);
@@ -182,11 +198,44 @@
     Some features are disabled in the public build.
   </div>
 
+  <section class="terms">
+    <h2>Terms of use</h2>
+    <p style="margin-top:0;font-size:13.5px;">
+      KONI-Forge is proprietary software of KISTI. Access to this demonstration
+      is a limited, revocable permission to evaluate the system — it is not a
+      licence to the software.
+    </p>
+    <ul>
+      <li><span class="allow">Permitted</span> — evaluating the system for
+          non-commercial research or academic review, using your own documents.</li>
+      <li><span class="deny">Not permitted</span> — <b>any commercial use</b>;
+          redistribution or resale of the system, its outputs, or any part of it;
+          reverse engineering; extracting model weights, source code, or
+          configuration; automated or bulk access; attempting to reach accounts,
+          data, or functions other than your own.</li>
+    </ul>
+    <p class="small">
+      <b>About what you upload:</b> documents you submit are processed and stored
+      on the host machine for the duration of the demonstration and may be visible
+      to other demo users, who share this account. Please do not upload
+      confidential, personal, or otherwise sensitive material.
+    </p>
+    <p class="small" style="margin-top:10px;">
+      The demonstration is provided as is, without warranty of any kind, and may
+      be modified, suspended, or withdrawn at any time. Enquiries about licensing
+      or technology transfer should be directed to KISTI.
+    </p>
+  </section>
+
   <footer>
     <p id="status"></p>
     <p>
       Demo instance for an EACL system demonstration submission.
       Source code is not publicly released.
+    </p>
+    <p>
+      © 2026 Korea Institute of Science and Technology Information (KISTI),
+      Large-scale AI Research Center. All rights reserved.
     </p>
   </footer>
 

@@ -20,6 +20,20 @@ The demonstration runs on shared research hardware and is **not continuously
 available**. When it is offline the landing page says so rather than linking to
 a dead address.
 
+## Terms of use for the demonstration
+
+Access to the running demonstration is a limited, revocable permission to
+**evaluate** the system. It is **not** a licence to the software.
+
+**Permitted:** non-commercial research and academic evaluation.
+
+**Not permitted:** any commercial use; redistribution or resale of the system,
+its outputs, or any part of it; reverse engineering; extraction of model
+weights, source code, or configuration; automated or bulk access.
+
+The full terms are shown on the landing page, before the link to the running
+instance.
+
 ## Copyright and licence
 
 Copyright © 2026 Korea Institute of Science and Technology Information (KISTI),
