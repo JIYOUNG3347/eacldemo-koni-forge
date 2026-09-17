@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>KONI-Forge — Live Demo</title>
+<!--
+  Landing page for the KONI-Forge live demo.
+
+  WHY THIS PAGE EXISTS. The demo runs on lab hardware reached through a
+  Cloudflare quick tunnel, whose address is random and changes whenever the
+  tunnel restarts. A paper cannot cite an address like that. This page has a
+  permanent GitHub Pages URL and forwards to whatever the current address is,
+  so the citation stays alive.
+
+  TO UPDATE after the tunnel restarts: change DEMO_URL below, commit, push.
+  GitHub Pages redeploys in about a minute. Or run, from the demo host:
+      ./scripts/update-landing.sh <new-url>
+-->
+<style>
+  :root {
+    --bg: #fbfbfa;
+    --fg: #16161a;
+    --muted: #6b6b76;
+    --line: #e6e6e3;
+    --card: #ffffff;
+    --accent: #2a5bd7;
+    --ok: #1a7f52;
+    --warn-bg: #fff8e6;
+    --warn-line: #f0dca8;
+    --warn-fg: #7a5a12;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131316; --fg: #f2f2f0; --muted: #a0a0ab; --line: #2b2b31;
+      --card: #1b1b1f; --accent: #7ba2ff; --ok: #5fd39b;
+      --warn-bg: #2a2413; --warn-line: #4a3f1d; --warn-fg: #e3c777;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131316; --fg: #f2f2f0; --muted: #a0a0ab; --line: #2b2b31;
+    --card: #1b1b1f; --accent: #7ba2ff; --ok: #5fd39b;
+    --warn-bg: #2a2413; --warn-line: #4a3f1d; --warn-fg: #e3c777;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 56px 20px 72px; }
+
+  header { margin-bottom: 36px; }
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 12px;
+  }
+  h1 {
+    margin: 0 0 10px; font-size: clamp(28px, 6vw, 40px); line-height: 1.12;
+    letter-spacing: -.03em; font-weight: 800;
+  }
+  .tagline { margin: 0; color: var(--muted); font-size: 16px; max-width: 54ch; }
+
+  .cta {
+    display: block; margin: 28px 0 10px; padding: 16px 22px;
+    background: var(--fg); color: var(--bg); border-radius: 12px;
+    text-decoration: none; font-weight: 700; font-size: 16px; text-align: center;
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .cta:hover { transform: translateY(-1px); opacity: .9; }
+  .cta.disabled { background: var(--line); color: var(--muted); pointer-events: none; }
+  .cta-sub { margin: 0 0 32px; font-size: 13px; color: var(--muted); text-align: center; }
+
+  .creds {
+    display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: center;
+    margin: 0 0 32px; padding: 14px 18px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  }
+  .creds div { font-size: 13px; }
+  .creds b { font-weight: 600; color: var(--muted); margin-right: 7px; font-size: 12px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 5px; padding: 1.5px 6px;
+  }
+
+  h2 {
+    margin: 36px 0 14px; font-size: 13px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .card h3 { margin: 0 0 6px; font-size: 14.5px; font-weight: 700; letter-spacing: -.01em; }
+  .card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  ol.steps { margin: 0; padding-left: 20px; }
+  ol.steps li { margin-bottom: 9px; font-size: 14.5px; }
+  ol.steps li span { color: var(--muted); font-size: 13.5px; }
+
+  .note {
+    margin-top: 32px; padding: 14px 18px; font-size: 13.5px; line-height: 1.6;
+    background: var(--warn-bg); border: 1px solid var(--warn-line);
+    color: var(--warn-fg); border-radius: 10px;
+  }
+  .note b { font-weight: 700; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-size: 12.5px; color: var(--muted);
+  }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">System Demonstration</p>
+    <h1>KONI-Forge</h1>
+    <p class="tagline">
+      An LLM development platform built on four measurement-driven components:
+      knowledge-boundary diagnosis, data augmentation, in-training safety
+      monitoring, and confidence-based ensembling.
+    </p>
+  </header>
+
+  <a id="launch" class="cta" href="#">Open the live demo →</a>
+  <p class="cta-sub" id="launch-sub">Opens in this tab. No installation required.</p>
+
+  <div class="creds">
+    <div><b>Username</b><code>demo</code></div>
+    <div><b>Password</b><code>eacl2026-demo</code></div>
+    <div><b>Interface</b><code>English</code></div>
+  </div>
+
+  <h2>What you can try</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Knowledge boundary diagnosis</h3>
+      <p>Upload documents and measure how much of that knowledge the base model
+         already holds — the measurement decides what happens next.</p>
+    </div>
+    <div class="card">
+      <h3>Routed pipeline</h3>
+      <p>High coverage routes to retrieval; low coverage routes to fine-tuning.
+         The route is derived from the measurement, not from a preset.</p>
+    </div>
+    <div class="card">
+      <h3>In-training monitoring</h3>
+      <p>Benchmarks run between training rounds. A significant regression halves
+         the learning rate or stops training and rolls back.</p>
+    </div>
+    <div class="card">
+      <h3>Agent orchestration</h3>
+      <p>Seven specialist agents drive the stages through a shared state and a
+         planner that selects the next step from that state.</p>
+    </div>
+  </div>
+
+  <h2>Suggested path (about 15 minutes)</h2>
+  <ol class="steps">
+    <li>Sign in and upload two or three English PDFs.
+        <span>Documents must be in English — the pipeline runs in English.</span></li>
+    <li>Let the pipeline index them and run the boundary diagnosis.
+        <span>You will see a coverage percentage and the route it implies.</span></li>
+    <li>Watch question generation, preprocessing, and training proceed.
+        <span>Each stage reports what it did, and what it skipped.</span></li>
+    <li>Open the evaluation report.
+        <span>Layers that were not measured are marked as such rather than scored.</span></li>
+  </ol>
+
+  <div class="note">
+    <b>This is a live system on shared lab hardware.</b> One GPU serves every
+    visitor, so a training run started by someone else will queue yours behind
+    it. Please keep runs small — the available models are 0.5B–1B parameters,
+    which is what this hardware supports.
+    Some features are disabled in the public build.
+  </div>
+
+  <footer>
+    <p id="status"></p>
+    <p>
+      Demo instance for an EACL system demonstration submission.
+      Source code is not publicly released.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  // ── The only line that changes when the tunnel restarts ──────────────────
+  const DEMO_URL = "";
+  // ─────────────────────────────────────────────────────────────────────────
+
+  (function () {
+    const link = document.getElementById("launch");
+    const sub = document.getElementById("launch-sub");
+    const status = document.getElementById("status");
+    const placeholder = /^https:\/\/PASTE|^$/i.test(DEMO_URL);
+
+    if (placeholder) {
+      // Never present a dead link as a working one. Saying the demo is
+      // offline is honest; a button that goes nowhere is not.
+      link.textContent = "Demo is offline";
+      link.classList.add("disabled");
+      link.removeAttribute("href");
+      sub.textContent = "The demo is not running right now. Please check back later.";
+      return;
+    }
+
+    link.href = DEMO_URL;
+    try {
+      status.textContent = "Demo endpoint: " + new URL(DEMO_URL).hostname;
+    } catch (e) {
+      /* a malformed URL should not blank the page */
+    }
+  })();
+</script>
+</body>
+</html>
