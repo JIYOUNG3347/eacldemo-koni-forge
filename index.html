@@ -86,7 +86,44 @@
     border-radius:4px; background:var(--tint);
   }
   .cta h2{margin:0 0 6px; text-align:left; font-size:19px}
-  .cta p{margin:0 0 18px; font-size:15.5px; color:var(--ink-soft)}
+  .cta p{margin:0 0 20px; font-size:15.5px; color:var(--ink-soft)}
+
+  /* 접속 정보 — 방문자가 이 페이지에서 실제로 **가져가야 하는** 것이라
+     설명문에 섞지 않고 따로 세운다. 값은 클릭 한 번으로 복사된다. */
+  .creds{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:10px; margin:0 0 20px;
+  }
+  .cred{
+    background:#fff; border:1px solid var(--line); border-radius:6px;
+    padding:11px 14px;
+  }
+  .cred .lbl{
+    display:block; font-size:10.5px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-faint); margin-bottom:5px;
+  }
+  .cred .val{
+    display:flex; align-items:center; gap:8px; justify-content:space-between;
+  }
+  .cred .val span{
+    font-family:var(--mono); font-size:16px; font-weight:700; letter-spacing:-.01em;
+    word-break:break-all;
+  }
+  .copy{
+    flex:0 0 auto; border:1px solid var(--line); background:#fff;
+    border-radius:4px; padding:3px 9px; font:600 11px var(--sans);
+    color:var(--ink-soft); cursor:pointer; transition:background .12s ease;
+  }
+  .copy:hover{background:var(--tint)}
+  .copy.done{color:#12693f; border-color:#bfe0cd}
+
+  /* 시스템 화면 — 링크를 누르면 무엇이 나오는지 미리 보여준다. */
+  .shot{margin:40px 0 0}
+  .shot img{
+    display:block; width:100%; height:auto; border-radius:8px;
+    border:1px solid var(--line);
+  }
+  .shot figcaption{margin:11px 0 0; font-size:13.5px; color:var(--ink-faint)}
 
   /* ── sections ─────────────────────────────────────────────── */
   section{margin-top:58px}
@@ -174,12 +211,43 @@
       This page is a signpost — the system itself runs on our hardware.
       Click the button below to open it, and sign in with the account shown.
     </p>
+    <div class="creds">
+      <div class="cred">
+        <span class="lbl">Address</span>
+        <span class="val"><span id="endpoint2">—</span>
+          <button class="copy" data-copy="#endpoint2" type="button">Copy</button></span>
+      </div>
+      <div class="cred">
+        <span class="lbl">User ID</span>
+        <span class="val"><span id="cred-id">demo</span>
+          <button class="copy" data-copy="#cred-id" type="button">Copy</button></span>
+      </div>
+      <div class="cred">
+        <span class="lbl">Password</span>
+        <span class="val"><span id="cred-pw">eacl2026-demo</span>
+          <button class="copy" data-copy="#cred-pw" type="button">Copy</button></span>
+      </div>
+    </div>
+
     <nav class="links">
       <a id="go" class="pill" href="#"><span class="dot" id="dot"></span>Open the live demo →</a>
-      <a class="pill ghost" href="#access">Account details</a>
       <a class="pill ghost" href="#terms">Terms of use</a>
     </nav>
+    <p class="fine" style="margin:18px 0 0">
+      The address changes when the instance restarts; this page is updated to
+      match, so the button above is always current. Everyone signs in with the
+      same account, so treat anything you upload as visible to other visitors.
+    </p>
   </div>
+
+  <figure class="shot">
+    <img src="screenshot-signin.png" width="1465" height="870" loading="lazy"
+         alt="KONI-Forge sign-in screen: a dark panel reading “Work you used to do
+              step by step, now automated by multiple agents”, beside a sign-in
+              form asking for a user ID and password." />
+    <figcaption>The sign-in screen. Use the account above — the interface is in
+      English.</figcaption>
+  </figure>
 
   <section>
     <h2>Abstract</h2>
@@ -210,24 +278,6 @@
       and a guided one that stops for confirmation at each decision. Everything
       runs on local hardware with a local model provider, so documents need not
       leave the machine.</p>
-    </div>
-  </section>
-
-  <section id="access">
-    <h2>Access &amp; Account</h2>
-    <div class="box">
-      <dl class="kv">
-        <dt>Address</dt><dd id="endpoint" class="mono">—</dd>
-        <dt>Username</dt><dd><span class="mono">demo</span></dd>
-        <dt>Password</dt><dd><span class="mono">eacl2026-demo</span></dd>
-        <dt>Interface</dt><dd>English</dd>
-      </dl>
-      <p class="hint">
-        The address above changes when the instance restarts; this page is
-        updated to match, so the link at the top of this page is always the
-        current one. Everyone signs in with the same account, so treat anything
-        you upload as visible to other visitors.
-      </p>
     </div>
   </section>
 
@@ -297,7 +347,7 @@
     const go = document.getElementById("go");
     const dot = document.getElementById("dot");
     const note = document.getElementById("note");
-    const endpoint = document.getElementById("endpoint");
+    const endpoint = document.getElementById("endpoint2");
 
     if (!DEMO_URL || /^https:\/\/PASTE/i.test(DEMO_URL)) {
       // Never present a dead link as a working one. Saying the system is offline
@@ -308,8 +358,7 @@
       note.textContent =
         "The system runs on research hardware and is not always on. " +
         "Please check back later, or contact the authors to arrange a session.";
-      endpoint.textContent = "not running";
-      endpoint.classList.remove("mono");
+      if (endpoint) endpoint.textContent = "not running";
       return;
     }
 
@@ -321,6 +370,31 @@
       endpoint.textContent = DEMO_URL; // 형식이 이상해도 화면을 비우지 않는다
     }
   })();
+
+  // 값을 클릭 한 번으로 가져가게 한다 — 방문자가 실제로 하는 일은 이 셋을
+  // 옮겨 적는 것이다. 클립보드를 못 쓰는 환경(구형·비보안 컨텍스트)에서는
+  // 버튼이 조용히 실패하지 않고 그렇게 말한다.
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var el = document.querySelector(btn.dataset.copy);
+      if (!el) return;
+      var text = el.textContent.trim();
+      var done = function (ok) {
+        btn.textContent = ok ? "Copied" : "Select it";
+        btn.classList.toggle("done", ok);
+        setTimeout(function () {
+          btn.textContent = "Copy";
+          btn.classList.remove("done");
+        }, 1600);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { done(true); },
+                                                 function () { done(false); });
+      } else {
+        done(false);
+      }
+    });
+  });
 </script>
 </body>
 </html>
