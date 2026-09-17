@@ -4,296 +4,349 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>KONI-Forge — System Demonstration</title>
-<meta name="description" content="KONI-Forge: a platform that builds domain-specialised language models from raw documents, routed by a measurement of what the base model already knows." />
+<meta name="description" content="KONI-Forge builds domain-specialised language models from raw documents, choosing between retrieval and fine-tuning by measuring what the base model already knows." />
 <!--
-  Landing page for the KONI-Forge demonstration.
+  Project page for the KONI-Forge demonstration.
 
   WHY THIS PAGE EXISTS. The system runs on lab hardware reached through a tunnel
   whose address changes whenever it restarts. A paper cannot cite an address like
-  that. This page has a permanent URL and points at whatever the current address
-  is, so the citation stays alive.
+  that. This page has a permanent URL and forwards to whatever the current
+  address is, so the citation stays alive.
 
-  TO UPDATE after the tunnel restarts: change DEMO_URL at the bottom of this
-  file, commit, push. Or, from the demo host:
-      ./scripts/update-landing.sh <new-url>
+  TO UPDATE after the tunnel restarts: change DEMO_URL near the bottom, commit,
+  push. Or, from the demo host:  ./scripts/update-landing.sh <new-url>
 -->
 <style>
-  :root {
-    --bg:#fcfcfb; --fg:#15161a; --muted:#65656f; --faint:#8a8a94;
-    --line:#e4e4e0; --line-soft:#eeeeea; --card:#ffffff;
-    --link:#1f4fd8; --ok:#137a4d; --stop:#b0392c;
-    --serif: ui-serif, Georgia, "Times New Roman", serif;
-    --sans: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg:#121317; --fg:#ececed; --muted:#9a9aa4; --faint:#7a7a85;
-      --line:#292a30; --line-soft:#212228; --card:#191a1f;
-      --link:#8ba8ff; --ok:#4fc98c; --stop:#ff8b7a;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg:#121317; --fg:#ececed; --muted:#9a9aa4; --faint:#7a7a85;
-    --line:#292a30; --line-soft:#212228; --card:#191a1f;
-    --link:#8ba8ff; --ok:#4fc98c; --stop:#ff8b7a;
+  /* 흰 바탕 한 가지로 간다 — 논문 프로젝트 페이지의 관례이고, 사용자가 고른 결
+     정이다. 뷰어의 다크 모드를 따라가지 않으므로 color-scheme 을 명시해 브라우저
+     기본 UI(스크롤바·폼)까지 밝은 쪽으로 맞춘다. */
+  :root{
+    color-scheme: light;
+    --ink:#1a1a1a;        /* 본문 */
+    --ink-soft:#4a4a4a;   /* 부제·설명 */
+    --ink-faint:#8a8a8a;  /* 캡션·푸터 */
+    --line:#e8e8e8;
+    --tint:#f7f7f6;       /* 옅은 블록 배경 */
+    --link:#1a4fc4;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+            Helvetica, Arial, "Noto Sans", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   }
 
   *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
   body{
-    margin:0; background:var(--bg); color:var(--fg);
-    font:15px/1.65 var(--sans); -webkit-font-smoothing:antialiased;
+    margin:0; background:#ffffff; color:var(--ink);
+    font:17px/1.75 var(--sans);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   }
-  a{color:var(--link)}
-  .wrap{max-width:680px; margin:0 auto; padding:64px 22px 80px}
+  a{color:var(--link); text-decoration:none}
+  a:hover{text-decoration:underline}
 
-  /* ── masthead ── */
-  .kicker{
-    font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
-    color:var(--faint); margin:0 0 14px;
-  }
+  .page{max-width:760px; margin:0 auto; padding:78px 24px 96px}
+
+  /* ── masthead ─────────────────────────────────────────────── */
+  header.top{text-align:center; margin-bottom:46px}
   h1{
-    margin:0 0 8px; font-family:var(--serif); font-weight:600;
-    font-size:clamp(30px,6.5vw,42px); line-height:1.1; letter-spacing:-.015em;
+    margin:0 0 18px;
+    font-size:clamp(34px,7vw,50px); font-weight:700;
+    letter-spacing:-.033em; line-height:1.08;
   }
-  .sub{margin:0 0 6px; font-size:16.5px; color:var(--muted); line-height:1.5}
-  .affil{margin:0; font-size:13.5px; color:var(--faint)}
+  .lede{
+    margin:0 auto 22px; max-width:30em;
+    font-size:19px; line-height:1.55; color:var(--ink-soft); font-weight:400;
+  }
+  /* ANONYMITY: remove .affil if the venue requires anonymous review. */
+  .affil{margin:0 0 30px; font-size:15px; color:var(--ink-soft)}
+  .affil .sup{font-size:12px; vertical-align:super; color:var(--ink-faint)}
 
-  hr.rule{border:0; border-top:1px solid var(--line); margin:34px 0}
+  .links{display:flex; flex-wrap:wrap; gap:11px; justify-content:center}
+  .pill{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:11px 24px; border-radius:999px;
+    background:#1a1a1a; color:#fff; font-size:15.5px; font-weight:600;
+    letter-spacing:-.005em; border:1px solid #1a1a1a;
+    transition:background .14s ease, border-color .14s ease, transform .14s ease;
+  }
+  .pill:hover{background:#000; transform:translateY(-1px); text-decoration:none}
+  .pill.ghost{background:#fff; color:var(--ink); border-color:#d6d6d6}
+  .pill.ghost:hover{background:var(--tint); border-color:#bdbdbd}
+  .pill.off{background:#ededed; color:#9a9a9a; border-color:#ededed;
+            pointer-events:none; font-weight:500}
+  .pill .dot{
+    width:7px; height:7px; border-radius:50%; background:#5bd08a;
+    box-shadow:0 0 0 3px rgba(91,208,138,.22);
+  }
+  .links-note{margin:15px 0 0; font-size:13.5px; color:var(--ink-faint)}
 
-  /* ── the one thing this page is for ── */
-  .gate{
-    border:1px solid var(--line); border-radius:12px; overflow:hidden;
-    background:var(--card); margin:30px 0 34px;
-  }
-  .gate-note{
-    padding:13px 18px; border-bottom:1px solid var(--line-soft);
-    font-size:13px; color:var(--muted); background:linear-gradient(0deg,transparent,rgba(127,127,127,.03));
-  }
-  .gate-note b{color:var(--fg); font-weight:650}
-  .gate-body{padding:18px}
-  .go{
-    display:block; padding:15px 20px; border-radius:9px;
-    background:var(--fg); color:var(--bg); text-decoration:none;
-    font-size:15.5px; font-weight:650; text-align:center; letter-spacing:-.01em;
-    transition:opacity .12s ease, transform .12s ease;
-  }
-  .go:hover{opacity:.88; transform:translateY(-1px)}
-  .go.off{background:var(--line); color:var(--faint); pointer-events:none; font-weight:600}
-  .go-sub{margin:11px 0 0; font-size:12.5px; color:var(--faint); text-align:center}
-
-  .cred{
-    margin:16px 0 0; padding-top:15px; border-top:1px dashed var(--line);
-    display:grid; grid-template-columns:auto 1fr; gap:7px 14px;
-    font-size:13.5px; align-items:baseline;
-  }
-  .cred dt{color:var(--muted); font-size:12.5px}
-  .cred dd{margin:0}
-  code, .k{
-    font-family:var(--mono); font-size:12.5px;
-    background:rgba(127,127,127,.1); border-radius:4px; padding:1.5px 6px;
-  }
-
-  /* ── prose ── */
+  /* ── sections ─────────────────────────────────────────────── */
+  section{margin-top:58px}
   h2{
-    margin:38px 0 13px; font-size:11.5px; font-weight:700;
-    letter-spacing:.13em; text-transform:uppercase; color:var(--faint);
+    margin:0 0 20px; text-align:center;
+    font-size:25px; font-weight:700; letter-spacing:-.02em;
   }
-  .abstract{font-family:var(--serif); font-size:16px; line-height:1.72}
-  .abstract p{margin:0 0 15px}
-  .abstract p:last-child{margin-bottom:0}
-  p{margin:0 0 14px}
+  h3{margin:30px 0 9px; font-size:16.5px; font-weight:650; letter-spacing:-.01em}
+  p{margin:0 0 17px}
+  .abstract p{text-align:justify; hyphens:auto}
 
-  /* ── pipeline ── */
-  ol.stages{margin:0; padding:0; list-style:none; counter-reset:s}
-  ol.stages li{
-    counter-increment:s; position:relative; padding:0 0 15px 34px;
-    border-left:1px solid var(--line); margin-left:9px;
+  /* ── credentials ──────────────────────────────────────────── */
+  .box{
+    background:var(--tint); border:1px solid var(--line);
+    border-radius:12px; padding:22px 26px;
   }
-  ol.stages li:last-child{border-left-color:transparent; padding-bottom:0}
-  ol.stages li::before{
-    content:counter(s); position:absolute; left:-9.5px; top:1px;
-    width:19px; height:19px; border-radius:50%;
-    background:var(--bg); border:1px solid var(--line); color:var(--faint);
-    font:600 10.5px/17px var(--sans); text-align:center;
+  .kv{
+    margin:0; display:grid; grid-template-columns:max-content 1fr;
+    gap:10px 20px; align-items:baseline; font-size:15.5px;
   }
-  ol.stages b{display:block; font-size:14.5px; font-weight:650; margin-bottom:2px}
-  ol.stages span{font-size:13.5px; color:var(--muted)}
+  .kv dt{color:var(--ink-faint); font-size:13.5px; letter-spacing:.01em}
+  .kv dd{margin:0}
+  code,.mono{
+    font-family:var(--mono); font-size:14px;
+    background:#fff; border:1px solid var(--line); border-radius:5px;
+    padding:2px 8px;
+  }
+  .box .hint{margin:16px 0 0; font-size:13.5px; color:var(--ink-faint); line-height:1.6}
 
-  table.facts{width:100%; border-collapse:collapse; font-size:13.5px}
-  table.facts td{padding:7px 0; border-top:1px solid var(--line-soft); vertical-align:top}
-  table.facts td:first-child{width:38%; color:var(--muted); padding-right:16px}
+  /* ── pipeline ─────────────────────────────────────────────── */
+  ol.flow{margin:0; padding:0; list-style:none; counter-reset:step}
+  ol.flow li{
+    counter-increment:step; display:grid;
+    grid-template-columns:30px 1fr; gap:0 16px;
+    padding:15px 0; border-top:1px solid var(--line);
+  }
+  ol.flow li:last-child{border-bottom:1px solid var(--line)}
+  ol.flow li::before{
+    content:counter(step,decimal-leading-zero);
+    font:600 13px/1.7 var(--mono); color:var(--ink-faint);
+  }
+  ol.flow b{display:block; font-size:16.5px; font-weight:650; letter-spacing:-.01em}
+  ol.flow span{display:block; margin-top:3px; font-size:15px; color:var(--ink-soft); line-height:1.6}
 
-  .terms{font-size:13.5px}
-  .terms ul{margin:0 0 12px; padding-left:19px}
-  .terms li{margin-bottom:5px}
-  .yes{color:var(--ok); font-weight:650}
-  .no{color:var(--stop); font-weight:650}
-  .fine{font-size:12.5px; color:var(--muted); line-height:1.6}
+  /* ── facts table ──────────────────────────────────────────── */
+  table.facts{width:100%; border-collapse:collapse; font-size:15.5px}
+  table.facts th{
+    width:33%; text-align:left; font-weight:500; color:var(--ink-faint);
+    font-size:14.5px; padding:11px 18px 11px 0; vertical-align:top;
+  }
+  table.facts td{padding:11px 0; vertical-align:top; color:var(--ink-soft)}
+  table.facts tr + tr th, table.facts tr + tr td{border-top:1px solid var(--line)}
 
-  footer{margin-top:46px; padding-top:18px; border-top:1px solid var(--line);
-         font-size:12px; color:var(--faint); line-height:1.7}
-  footer p{margin:0 0 5px}
+  /* ── terms ────────────────────────────────────────────────── */
+  .terms{font-size:15.5px}
+  .terms ul{margin:0 0 16px; padding-left:22px}
+  .terms li{margin-bottom:7px; color:var(--ink-soft)}
+  .terms li b{color:var(--ink)}
+  .yes{color:#12693f; font-weight:650}
+  .no{color:#a5382b; font-weight:650}
+  .fine{font-size:14px; color:var(--ink-faint); line-height:1.65}
+
+  footer{
+    margin-top:72px; padding-top:26px; border-top:1px solid var(--line);
+    text-align:center; font-size:13px; color:var(--ink-faint); line-height:1.75;
+  }
+  footer p{margin:0 0 7px}
+
+  @media (max-width:520px){
+    .page{padding:52px 20px 68px}
+    .pill{width:100%; justify-content:center}
+    .kv{grid-template-columns:1fr; gap:3px 0}
+    .kv dd{margin-bottom:9px}
+    table.facts th{width:auto; display:block; padding-bottom:1px}
+    table.facts td{display:block; padding-top:0}
+    table.facts tr + tr th{border-top:1px solid var(--line); padding-top:11px}
+    table.facts tr + tr td{border-top:0}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="page">
 
-  <p class="kicker">System Demonstration</p>
-  <h1>KONI-Forge</h1>
-  <p class="sub">Building domain-specialised language models from raw documents,
-     routed by a measurement of what the base model already knows.</p>
-  <!-- ANONYMITY: remove this line if the venue requires anonymous review. -->
-  <p class="affil">Large-scale AI Research Center, Korea Institute of Science and
-     Technology Information (KISTI)</p>
-
-  <div class="gate">
-    <p class="gate-note">
-      <b>This page is not the system.</b> It is a fixed address that points to the
-      running instance, which moves. Follow the link to use KONI-Forge.
+  <header class="top">
+    <h1>KONI-Forge</h1>
+    <p class="lede">
+      Building domain-specialised language models from raw documents — choosing
+      between retrieval and fine-tuning by measuring what the base model already
+      knows.
     </p>
-    <div class="gate-body">
-      <a id="go" class="go" href="#">Open the live system →</a>
-      <p class="go-sub" id="go-sub">Sign in with the account below.</p>
-      <dl class="cred">
-        <dt>Username</dt><dd><span class="k">demo</span></dd>
-        <dt>Password</dt><dd><span class="k">eacl2026-demo</span></dd>
+    <!-- ANONYMITY: remove this line if the venue requires anonymous review. -->
+    <p class="affil">Large-scale AI Research Center, Korea Institute of Science
+      and Technology Information (KISTI)</p>
+
+    <nav class="links">
+      <a id="go" class="pill" href="#"><span class="dot" id="dot"></span>Live Demo</a>
+      <a class="pill ghost" href="#access">Access &amp; Account</a>
+      <a class="pill ghost" href="#terms">Terms of Use</a>
+    </nav>
+    <p class="links-note" id="note">
+      This page is a signpost. The system itself runs elsewhere.
+    </p>
+  </header>
+
+  <section>
+    <h2>Abstract</h2>
+    <div class="abstract">
+      <p>Adapting a language model to a specialised domain usually begins with a
+      guess: fine-tune, retrieve, or both. KONI-Forge replaces that guess with a
+      measurement. Given a collection of documents, it indexes them for retrieval
+      and then probes the base model against their content to estimate how much
+      of that knowledge the model already holds, and how often it fabricates an
+      answer when it does not. The resulting coverage and hallucination rates
+      decide the route: retrieval alone above 70&thinsp;% coverage, supervised
+      fine-tuning below 50&thinsp;%, and a hybrid in between — with a high
+      hallucination rate pulling the verdict down a step regardless of
+      coverage.</p>
+
+      <p>When the route calls for training, the platform generates
+      question–answer pairs from the same documents, filters and augments them,
+      and runs the fine-tune. Training is watched from the inside: each
+      checkpoint is benchmarked during the run, and a significant regression
+      halves the learning rate, stops training, or rolls back to the last
+      checkpoint known to be safe. The finished model is evaluated against public
+      benchmarks, against the source documents themselves, and — where retrieval
+      is part of the answer — for faithfulness to the retrieved context.</p>
+
+      <p>The stages are driven by specialist agents that read a shared state and
+      choose the next step from it, rather than following a fixed script. Two
+      modes are available: an autonomous one that runs the pipeline end to end,
+      and a guided one that stops for confirmation at each decision. Everything
+      runs on local hardware with a local model provider, so documents need not
+      leave the machine.</p>
+    </div>
+  </section>
+
+  <section id="access">
+    <h2>Access &amp; Account</h2>
+    <div class="box">
+      <dl class="kv">
+        <dt>Address</dt><dd id="endpoint" class="mono">—</dd>
+        <dt>Username</dt><dd><span class="mono">demo</span></dd>
+        <dt>Password</dt><dd><span class="mono">eacl2026-demo</span></dd>
         <dt>Interface</dt><dd>English</dd>
       </dl>
+      <p class="hint">
+        The address above changes when the instance restarts; this page is
+        updated to match, so the link at the top of this page is always the
+        current one. Everyone signs in with the same account, so treat anything
+        you upload as visible to other visitors.
+      </p>
     </div>
-  </div>
+  </section>
 
-  <h2>Abstract</h2>
-  <div class="abstract">
-    <p>Adapting a language model to a specialised domain usually begins with a
-    guess: fine-tune, or retrieve, or both. KONI-Forge replaces that guess with a
-    measurement. Given a collection of documents, it indexes them for retrieval
-    and then probes the base model against their content to estimate how much of
-    that knowledge the model already holds, and how often it fabricates an answer
-    when it does not. The resulting coverage and hallucination rates decide the
-    route: retrieval alone above 70&nbsp;% coverage, supervised fine-tuning below
-    50&nbsp;%, and a hybrid between — with a high hallucination rate pulling the
-    verdict down a step regardless of coverage.</p>
-
-    <p>When the route calls for training, the platform generates question–answer
-    pairs from the same documents, filters and augments them, and runs the
-    fine-tune. Training is watched from the inside: each checkpoint is benchmarked
-    during the run, and a significant regression halves the learning rate, stops
-    training, or rolls back to the last checkpoint known to be safe. The finished
-    model is evaluated against public benchmarks, against the source documents
-    themselves, and — where retrieval is part of the answer — for faithfulness to
-    the retrieved context.</p>
-
-    <p>The stages are driven by specialist agents that read a shared state and
-    choose the next step from it, rather than following a fixed script. Two modes
-    are available: an autonomous one that runs the pipeline end to end, and a
-    guided one that stops for confirmation at each decision. The system runs
-    entirely on local hardware with a local model provider, so documents need not
-    leave the machine.</p>
-  </div>
-
-  <h2>What happens when you upload documents</h2>
-  <ol class="stages">
-    <li><b>Retrieval indexing</b>
-        <span>Text is extracted per page, chunked, embedded, and stored with its
-        source file and page number, so later answers can be traced back.</span></li>
-    <li><b>Knowledge boundary detection</b>
-        <span>Probe questions are generated from the indexed chunks and put to the
-        base model. Coverage and hallucination rates are reported per category.</span></li>
-    <li><b>Route selection</b>
-        <span>The measurement, not a preset, decides between retrieval,
+  <section>
+    <h2>What happens when you upload documents</h2>
+    <ol class="flow">
+      <li><b>Retrieval indexing</b>
+        <span>Text is extracted page by page, chunked, embedded, and stored with
+        its source file and page number, so later answers can be traced back to
+        where they came from.</span></li>
+      <li><b>Knowledge boundary detection</b>
+        <span>Probe questions are generated from the indexed chunks and put to
+        the base model. Coverage and hallucination rates are reported per
+        category, with categories that have too few probes marked as such rather
+        than scored.</span></li>
+      <li><b>Route selection</b>
+        <span>The measurement — not a preset — decides between retrieval,
         fine-tuning, and a hybrid of the two.</span></li>
-    <li><b>Dataset generation</b>
+      <li><b>Dataset generation</b>
         <span>Question–answer pairs are generated from the documents, weighted
         toward the categories the diagnosis found weak.</span></li>
-    <li><b>Preprocessing</b>
-        <span>Filtering and augmentation. Each artefact is kept as a separate
-        file, so every step remains inspectable and reversible.</span></li>
-    <li><b>Training and evaluation</b>
+      <li><b>Preprocessing</b>
+        <span>Filtering and augmentation. Each stage is written as its own file,
+        so every step stays inspectable and reversible.</span></li>
+      <li><b>Training and evaluation</b>
         <span>LoRA, full fine-tuning, or preference training, monitored between
-        rounds; then benchmarked and reported.</span></li>
-  </ol>
+        rounds; then benchmarked and written up as a report.</span></li>
+    </ol>
+  </section>
 
-  <h2>This instance</h2>
-  <table class="facts">
-    <tr><td>Hardware</td><td>One NVIDIA RTX 4000 Ada (20&nbsp;GB), shared by all visitors</td></tr>
-    <tr><td>Models</td><td>0.5B–1B parameters — what this hardware supports</td></tr>
-    <tr><td>Documents</td><td>Upload your own; English only, as the pipeline runs in English</td></tr>
-    <tr><td>Availability</td><td>Research hardware, not a hosted service. It is switched off between sessions</td></tr>
-    <tr><td>Restrictions</td><td>Some features of the full system are disabled in this public build</td></tr>
-  </table>
+  <section>
+    <h2>About this instance</h2>
+    <table class="facts">
+      <tr><th>Hardware</th>
+          <td>One NVIDIA RTX 4000 Ada (20&thinsp;GB), shared by every visitor</td></tr>
+      <tr><th>Models</th>
+          <td>0.5B–1B parameters — what this hardware supports</td></tr>
+      <tr><th>Documents</th>
+          <td>Bring your own. English only, as the pipeline runs in English</td></tr>
+      <tr><th>Availability</th>
+          <td>Research hardware, not a hosted service. It is switched off between
+              sessions</td></tr>
+      <tr><th>Scope</th>
+          <td>Some features of the full system are disabled in this public
+              build</td></tr>
+    </table>
+    <p class="fine" style="margin-top:16px">
+      A training run started by one visitor queues the next one behind it, so
+      please keep runs small.
+    </p>
+  </section>
 
-  <p class="fine" style="margin-top:14px">
-    A training run started by one visitor will queue the next one behind it.
-    Please keep runs small.
-  </p>
-
-  <hr class="rule" />
-
-  <h2>Terms of use</h2>
-  <div class="terms">
-    <p>KONI-Forge is proprietary software. Access to this demonstration is a
-    limited, revocable permission to evaluate the system — <b>not a licence to the
-    software</b>.</p>
-    <ul>
-      <li><span class="yes">Permitted</span> — evaluation for non-commercial
+  <section id="terms">
+    <h2>Terms of Use</h2>
+    <div class="terms">
+      <p>KONI-Forge is proprietary software. Access to this demonstration is a
+      limited, revocable permission to evaluate the system — <b>not a licence to
+      the software</b>.</p>
+      <ul>
+        <li><span class="yes">Permitted</span> — evaluation for non-commercial
           research or academic review, using your own documents.</li>
-      <li><span class="no">Not permitted</span> — any commercial use;
+        <li><span class="no">Not permitted</span> — any commercial use;
           redistribution or resale of the system or its outputs; reverse
           engineering; extraction of model weights, source code, prompts, or
           configuration; automated or bulk access; access to accounts or data
           other than your own.</li>
-    </ul>
-    <p class="fine">
-      <b>What you upload.</b> Documents you submit are processed and stored on the
-      host machine and may be visible to other visitors, who share the same
-      account. Do not upload confidential, personal, or otherwise sensitive
-      material. The demonstration is provided as is, without warranty, and may be
-      modified, suspended, or withdrawn at any time.
-    </p>
-  </div>
+      </ul>
+      <p class="fine"><b>What you upload.</b> Documents you submit are processed
+      and stored on the host machine and may be visible to other visitors, who
+      share the same account. Do not upload confidential, personal, or otherwise
+      sensitive material. The demonstration is provided as is, without warranty,
+      and may be modified, suspended, or withdrawn at any time.</p>
+    </div>
+  </section>
 
   <footer>
-    <p id="status"></p>
     <p>Source code is not publicly released. Enquiries about licensing or
-       technology transfer should be directed to KISTI.</p>
+      technology transfer should be directed to KISTI.</p>
     <p>© 2026 Korea Institute of Science and Technology Information (KISTI),
-       Large-scale AI Research Center. All rights reserved.
-       This page is licensed under
-       <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license noopener" target="_blank">CC&nbsp;BY-NC-ND&nbsp;4.0</a>;
-       the software is not covered by that licence.</p>
+      Large-scale AI Research Center. All rights reserved. This page is licensed
+      under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+      rel="license noopener" target="_blank">CC&thinsp;BY-NC-ND&thinsp;4.0</a>;
+      the software is not covered by that licence.</p>
   </footer>
 
 </div>
 
 <script>
-  // ── The only line that changes when the tunnel restarts ──────────────────
+  // ── The only line that changes when the instance restarts ────────────────
   const DEMO_URL = "https://chester-corners-duties-ballot.trycloudflare.com";
   // ─────────────────────────────────────────────────────────────────────────
 
   (function () {
     const go = document.getElementById("go");
-    const sub = document.getElementById("go-sub");
-    const status = document.getElementById("status");
+    const dot = document.getElementById("dot");
+    const note = document.getElementById("note");
+    const endpoint = document.getElementById("endpoint");
 
     if (!DEMO_URL || /^https:\/\/PASTE/i.test(DEMO_URL)) {
-      // Never present a dead link as a working one. Saying the demo is offline
+      // Never present a dead link as a working one. Saying the system is offline
       // is honest; a button that goes nowhere is not.
-      go.textContent = "The system is offline";
+      go.textContent = "Demo offline";
       go.classList.add("off");
       go.removeAttribute("href");
-      sub.textContent =
-        "It runs on research hardware and is not always on. Please check back, " +
-        "or contact the authors to arrange a session.";
-      document.querySelector(".cred").style.opacity = ".45";
+      note.textContent =
+        "The system runs on research hardware and is not always on. " +
+        "Please check back later, or contact the authors to arrange a session.";
+      endpoint.textContent = "not running";
+      endpoint.classList.remove("mono");
       return;
     }
 
     go.href = DEMO_URL;
+    if (dot) dot.title = "running";
     try {
-      status.textContent = "Current endpoint: " + new URL(DEMO_URL).hostname;
+      endpoint.textContent = new URL(DEMO_URL).hostname;
     } catch (e) {
-      /* a malformed URL should not blank the page */
+      endpoint.textContent = DEMO_URL; // 형식이 이상해도 화면을 비우지 않는다
     }
   })();
 </script>
