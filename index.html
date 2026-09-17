@@ -15,253 +15,219 @@
 
   TO UPDATE after the tunnel restarts: change DEMO_URL near the bottom, commit,
   push. Or, from the demo host:  ./scripts/update-landing.sh <new-url>
+
+  DESIGN. Radical subtraction: no shadows, no gradients, no card borders, no
+  decoration. Separation comes from whitespace, not lines. One accent — and here
+  the accent is simply black, because the palette is monochrome by request.
 -->
 <style>
-  /* 흰 바탕 한 가지로 간다 — 논문 프로젝트 페이지의 관례이고, 사용자가 고른 결
-     정이다. 뷰어의 다크 모드를 따라가지 않으므로 color-scheme 을 명시해 브라우저
-     기본 UI(스크롤바·폼)까지 밝은 쪽으로 맞춘다. */
+  /* 흰 바탕 한 가지로 간다. 뷰어의 다크 모드를 따라가지 않으므로 color-scheme 을
+     명시해 브라우저 기본 UI 까지 밝은 쪽으로 맞춘다. */
   :root{
     color-scheme: light;
-    --ink:#1a1a1a;        /* 본문 */
-    --ink-soft:#4a4a4a;   /* 부제·설명 */
-    --ink-faint:#8a8a8a;  /* 캡션·푸터 */
-    --line:#e8e8e8;
-    --tint:#f7f7f6;       /* 옅은 블록 배경 */
-    --link:#1a4fc4;
+    --carbon:#171a20;   /* 제목 · 기본 버튼 */
+    --graphite:#393c41; /* 본문 */
+    --pewter:#5c5e62;   /* 보조 */
+    --fog:#8e8e8e;      /* 캡션 */
+    --cloud:#eeeeee;    /* 구분선 */
+    --silver:#d0d1d2;   /* 최소한의 윤곽 */
+    --ash:#f4f4f4;      /* 대체 면 */
     --sans: Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif;
     --mono: "Courier New", Courier, monospace;
+    --ease: 0.33s cubic-bezier(0.5, 0, 0, 0.75);
   }
 
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0; background:#ffffff; color:var(--ink);
-    font:17px/1.75 var(--sans);
+    margin:0; background:#fff; color:var(--graphite);
+    font:16px/1.7 var(--sans); font-weight:400;
     -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   }
-  a{color:var(--link); text-decoration:none}
-  a:hover{text-decoration:underline}
+  a{color:inherit; text-decoration:none}
 
-  .page{max-width:920px; margin:0 auto; padding:78px 28px 96px}
+  .inner{max-width:920px; margin:0 auto; padding:0 28px}
 
-  /* ── masthead ─────────────────────────────────────────────── */
-  header.top{margin-bottom:38px}
-  h1{
-    margin:0 0 18px;
-    font-size:clamp(34px,7vw,50px); font-weight:700;
-    letter-spacing:-.033em; line-height:1.08;
+  /* ── navigation ───────────────────────────────────────────────
+     배경도 테두리도 그림자도 없다. 아래 내용이 대비를 만든다. */
+  nav.bar{
+    position:sticky; top:0; z-index:10; background:#fff;
+    padding:20px 0 19px;
   }
-  .lede{
-    margin:0 0 20px; max-width:44em;
-    font-size:19px; line-height:1.55; color:var(--ink-soft); font-weight:400;
+  nav.bar .inner{display:flex; align-items:center; gap:22px}
+  .word{
+    font-size:14px; font-weight:500; letter-spacing:.22em;
+    color:var(--carbon); margin-right:auto; white-space:nowrap;
+  }
+  .navlink{
+    font-size:14px; font-weight:500; color:var(--carbon);
+    padding:6px 14px; border-radius:4px;
+    transition:background-color var(--ease), color var(--ease);
+  }
+  .navlink:hover{background:var(--ash)}
+  .navcta{
+    font-size:14px; font-weight:500; color:#fff; background:var(--carbon);
+    padding:7px 18px; border-radius:4px;
+    transition:background-color var(--ease);
+  }
+  .navcta:hover{background:#000}
+  .navcta.off{background:var(--cloud); color:var(--fog); pointer-events:none}
+
+  /* ── hero ─────────────────────────────────────────────────────
+     한 화면에 메시지 하나. 제목 → 한 줄 → 버튼, 그 아래 화면 사진. */
+  header.hero{padding:96px 0 0; text-align:center}
+  h1{
+    margin:0 0 20px; color:var(--carbon);
+    font-size:clamp(32px,6vw,44px); font-weight:500; line-height:1.18;
+  }
+  .hook{
+    margin:0 auto 12px; max-width:34em;
+    font-size:19px; font-weight:400; line-height:1.5; color:var(--graphite);
   }
   /* ANONYMITY: remove .affil if the venue requires anonymous review. */
-  .affil{margin:0 0 30px; font-size:15px; color:var(--ink-soft)}
-  .affil .sup{font-size:12px; vertical-align:super; color:var(--ink-faint)}
+  .affil{margin:0 0 40px; font-size:14px; color:var(--fog)}
 
-  .links{display:flex; flex-wrap:wrap; gap:11px; align-items:center}
-  .pill{
-    display:inline-flex; align-items:center; gap:9px;
-    padding:11px 24px; border-radius:999px;
-    background:#1a1a1a; color:#fff; font-size:15.5px; font-weight:600;
-    letter-spacing:-.005em; border:1px solid #1a1a1a;
-    transition:background .14s ease, border-color .14s ease, transform .14s ease;
+  .actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    min-width:212px; min-height:42px; padding:0 22px; border-radius:4px;
+    font-size:14px; font-weight:500; border:1px solid transparent;
+    transition:background-color var(--ease), color var(--ease), border-color var(--ease);
   }
-  .pill:hover{background:#000; transform:translateY(-1px); text-decoration:none}
-  .pill.ghost{background:#fff; color:var(--ink); border-color:#d6d6d6}
-  .pill.ghost:hover{background:var(--tint); border-color:#bdbdbd}
-  .pill.off{background:#ededed; color:#9a9a9a; border-color:#ededed;
-            pointer-events:none; font-weight:500}
-  .pill .dot{
-    width:7px; height:7px; border-radius:50%; background:#5bd08a;
-    box-shadow:0 0 0 3px rgba(91,208,138,.22);
-  }
-  .links-note{margin:13px 0 0; font-size:13.5px; color:var(--ink-faint)}
+  .btn.solid{background:var(--carbon); color:#fff}
+  .btn.solid:hover{background:#000}
+  .btn.line{background:#fff; color:var(--graphite); border-color:var(--silver)}
+  .btn.line:hover{background:var(--ash)}
+  .btn.off{background:var(--cloud); color:var(--fog); pointer-events:none}
+  .btn .dot{width:6px; height:6px; border-radius:50%; background:currentColor; opacity:.85}
+  .hero-note{margin:20px 0 0; font-size:14px; color:var(--fog)}
 
-  /* 페이지에서 눈이 먼저 닿아야 하는 곳. 가운데 정렬을 풀면 화면이 평평해져
-     아무 데도 시선이 멈추지 않으므로, 여기 하나만 테두리와 배경으로 세운다. */
-  .cta{
-    margin:34px 0 8px; padding:26px 28px;
-    border:1px solid var(--line); border-left:3px solid var(--ink);
-    border-radius:4px; background:var(--tint);
+  /* 화면 사진 — 여백을 넉넉히 두고 가장자리까지 쓴다. 테두리도 그림자도 없다. */
+  .shot{margin:72px 0 0}
+  .shot img{display:block; width:100%; height:auto}
+  .shot figcaption{
+    max-width:920px; margin:14px auto 0; padding:0 28px;
+    font-size:14px; color:var(--fog); text-align:center;
   }
-  .cta h2{margin:0 0 6px; text-align:left; font-size:19px}
-  .cta p{margin:0 0 20px; font-size:15.5px; color:var(--ink-soft)}
 
-  /* 접속 정보 — 방문자가 이 페이지에서 실제로 **가져가야 하는** 것이라
-     설명문에 섞지 않고 따로 세운다. 값은 클릭 한 번으로 복사된다. */
+  /* ── sections ─────────────────────────────────────────────────
+     구분은 선이 아니라 간격으로 한다. */
+  section{padding:104px 0 0}
+  section.band{background:var(--ash); padding:96px 0; margin-top:104px}
+  section.band + section{padding-top:104px}
+  h2{
+    margin:0 0 26px; color:var(--carbon);
+    font-size:24px; font-weight:500; line-height:1.3;
+  }
+  p{margin:0 0 18px}
+  .lead{font-size:16px; line-height:1.78; color:var(--graphite)}
+
+  /* ── credentials ──────────────────────────────────────────────
+     방문자가 이 페이지에서 실제로 가져가는 것. 카드나 테두리로 감싸지 않고
+     타이포그래피 크기만으로 세운다. */
   .creds{
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:10px; margin:0 0 20px;
-  }
-  .cred{
-    background:#fff; border:1px solid var(--line); border-radius:6px;
-    padding:11px 14px;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:40px 48px; margin:0 0 34px;
   }
   .cred .lbl{
-    display:block; font-size:10.5px; font-weight:700; letter-spacing:.1em;
-    text-transform:uppercase; color:var(--ink-faint); margin-bottom:5px;
+    display:block; font-size:12px; font-weight:500; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--fog); margin:0 0 8px;
   }
+  .cred .row{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
   .cred .val{
-    display:flex; align-items:center; gap:8px; justify-content:space-between;
-  }
-  .cred .val span{
-    font-family:var(--mono); font-size:16px; font-weight:700; letter-spacing:-.01em;
-    word-break:break-all;
+    font-family:var(--mono); font-size:19px; font-weight:400;
+    color:var(--carbon); word-break:break-all; line-height:1.35;
   }
   .copy{
-    flex:0 0 auto; border:1px solid var(--line); background:#fff;
-    border-radius:4px; padding:3px 9px; font:600 11px var(--sans);
-    color:var(--ink-soft); cursor:pointer; transition:background .12s ease;
+    border:0; background:none; padding:0; cursor:pointer;
+    font:500 13px var(--sans); color:var(--pewter);
+    text-decoration:underline; text-underline-offset:3px;
+    transition:color var(--ease);
   }
-  .copy:hover{background:var(--tint)}
-  .copy.done{color:#12693f; border-color:#bfe0cd}
+  .copy:hover{color:var(--carbon)}
+  .copy.done{color:var(--carbon); text-decoration:none}
 
-  /* 시스템 화면 — 링크를 누르면 무엇이 나오는지 미리 보여준다. */
-  .shot{margin:40px 0 0}
-  .shot img{
-    display:block; width:100%; height:auto; border-radius:8px;
-    border:1px solid var(--line);
-  }
-  .shot figcaption{margin:11px 0 0; font-size:13.5px; color:var(--ink-faint)}
-
-  /* ── sections ─────────────────────────────────────────────── */
-  section{margin-top:58px}
-  h2{
-    margin:0 0 18px;
-    font-size:23px; font-weight:700; letter-spacing:-.02em;
-  }
-  h3{margin:30px 0 9px; font-size:16.5px; font-weight:650; letter-spacing:-.01em}
-  p{margin:0 0 17px}
-  .abstract p{text-align:justify; hyphens:auto}
-
-  /* ── credentials ──────────────────────────────────────────── */
-  .box{
-    background:var(--tint); border:1px solid var(--line);
-    border-radius:12px; padding:22px 26px;
-  }
-  .kv{
-    margin:0; display:grid; grid-template-columns:max-content 1fr;
-    gap:10px 20px; align-items:baseline; font-size:15.5px;
-  }
-  .kv dt{color:var(--ink-faint); font-size:13.5px; letter-spacing:.01em}
-  .kv dd{margin:0}
-  code,.mono{
-    font-family:var(--mono); font-size:14px;
-    background:#fff; border:1px solid var(--line); border-radius:5px;
-    padding:2px 8px;
-  }
-  .box .hint{margin:16px 0 0; font-size:13.5px; color:var(--ink-faint); line-height:1.6}
-
-  /* ── facts table ──────────────────────────────────────────── */
-  table.facts{width:100%; border-collapse:collapse; font-size:15.5px}
+  /* ── facts ────────────────────────────────────────────────────
+     표의 테두리도 뺀다. 행 구분은 아주 옅은 선 하나로 충분하다. */
+  table.facts{width:100%; border-collapse:collapse; font-size:15px}
   table.facts th{
-    width:33%; text-align:left; font-weight:500; color:var(--ink-faint);
-    font-size:14.5px; padding:11px 18px 11px 0; vertical-align:top;
+    width:30%; text-align:left; font-weight:400; color:var(--fog);
+    padding:14px 24px 14px 0; vertical-align:top;
   }
-  table.facts td{padding:11px 0; vertical-align:top; color:var(--ink-soft)}
-  table.facts tr + tr th, table.facts tr + tr td{border-top:1px solid var(--line)}
+  table.facts td{padding:14px 0; vertical-align:top; color:var(--graphite)}
+  table.facts tr + tr th, table.facts tr + tr td{border-top:1px solid var(--cloud)}
 
-  /* ── terms ────────────────────────────────────────────────── */
-  .terms{font-size:15.5px}
-  .terms ul{margin:0 0 16px; padding-left:22px}
-  .terms li{margin-bottom:7px; color:var(--ink-soft)}
-  .terms li b{color:var(--ink)}
-  .yes{color:#12693f; font-weight:650}
-  .no{color:#a5382b; font-weight:650}
-  .fine{font-size:14px; color:var(--ink-faint); line-height:1.65}
+  .terms ul{margin:0 0 18px; padding-left:22px}
+  .terms li{margin-bottom:8px}
+  .terms li b{color:var(--carbon); font-weight:500}
+  .fine{font-size:14px; color:var(--fog); line-height:1.7}
 
   footer{
-    margin-top:72px; padding-top:26px; border-top:1px solid var(--line);
-    font-size:13px; color:var(--ink-faint); line-height:1.75;
+    margin-top:104px; padding:34px 0 72px; border-top:1px solid var(--cloud);
+    font-size:13px; color:var(--fog); line-height:1.8;
   }
-  footer p{margin:0 0 7px}
+  footer p{margin:0 0 6px}
+  footer a{text-decoration:underline; text-underline-offset:3px}
 
-  @media (max-width:520px){
-    .page{padding:52px 20px 68px}
-    .pill{width:100%; justify-content:center}
-    .kv{grid-template-columns:1fr; gap:3px 0}
-    .kv dd{margin-bottom:9px}
-    table.facts th{width:auto; display:block; padding-bottom:1px}
-    table.facts td{display:block; padding-top:0}
-    table.facts tr + tr th{border-top:1px solid var(--line); padding-top:11px}
-    table.facts tr + tr td{border-top:0}
+  @media (max-width:620px){
+    header.hero{padding-top:62px}
+    section{padding-top:72px}
+    section.band{padding:68px 0; margin-top:72px}
+    .shot{margin-top:52px}
+    .btn{width:100%}
+    .navlink{display:none}
+    .creds{gap:30px}
   }
 </style>
 </head>
 <body>
-<div class="page">
 
-  <header class="top">
+<nav class="bar">
+  <div class="inner">
+    <a class="word" href="#top">KONI-FORGE</a>
+    <a class="navlink" href="#abstract">Abstract</a>
+    <a class="navlink" href="#access">Access</a>
+    <a class="navlink" href="#terms">Terms</a>
+    <a class="navcta" id="navcta" href="#">Open demo</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="inner">
     <h1>KONI-Forge</h1>
-    <p class="lede">
-      Building domain-specialised language models from raw documents — choosing
-      between retrieval and fine-tuning by measuring what the base model already
-      knows.
-    </p>
+    <p class="hook">Most domain adaptation starts with a guess.
+      This one starts with a measurement.</p>
     <!-- ANONYMITY: remove this line if the venue requires anonymous review. -->
-    <p class="affil">Large-scale AI Research Center, Korea Institute of Science
-      and Technology Information (KISTI)</p>
+    <p class="affil">Large-scale AI Research Center, KISTI</p>
 
-  </header>
-
-  <div class="cta">
-    <h2>Try the system</h2>
-    <p id="note">
-      This page is a signpost — the system itself runs on our hardware.
-      Click the button below to open it, and sign in with the account shown.
-    </p>
-    <div class="creds">
-      <div class="cred">
-        <span class="lbl">Address</span>
-        <span class="val"><span id="endpoint2">—</span>
-          <button class="copy" data-copy="#endpoint2" type="button">Copy</button></span>
-      </div>
-      <div class="cred">
-        <span class="lbl">User ID</span>
-        <span class="val"><span id="cred-id">demo</span>
-          <button class="copy" data-copy="#cred-id" type="button">Copy</button></span>
-      </div>
-      <div class="cred">
-        <span class="lbl">Password</span>
-        <span class="val"><span id="cred-pw">eacl2026-demo</span>
-          <button class="copy" data-copy="#cred-pw" type="button">Copy</button></span>
-      </div>
+    <div class="actions">
+      <a class="btn solid" id="go" href="#"><span class="dot" id="dot"></span>Open the live demo</a>
+      <a class="btn line" href="#access">Account details</a>
     </div>
-
-    <nav class="links">
-      <a id="go" class="pill" href="#"><span class="dot" id="dot"></span>Open the live demo →</a>
-      <a class="pill ghost" href="#terms">Terms of use</a>
-    </nav>
-    <p class="fine" style="margin:18px 0 0">
-      The address changes when the instance restarts; this page is updated to
-      match, so the button above is always current. Everyone signs in with the
-      same account, so treat anything you upload as visible to other visitors.
-    </p>
+    <p class="hero-note" id="note">The system runs on our hardware. This page points to it.</p>
   </div>
 
   <figure class="shot">
-    <img src="screenshot-signin.png" width="1465" height="870" loading="lazy"
-         alt="KONI-Forge sign-in screen: a dark panel reading “Work you used to do
-              step by step, now automated by multiple agents”, beside a sign-in
-              form asking for a user ID and password." />
-    <figcaption>The sign-in screen. Use the account above — the interface is in
-      English.</figcaption>
+    <img src="screenshot-signin.png" width="1465" height="870"
+         alt="The KONI-Forge sign-in screen: a dark panel reading “Work you used to
+              do step by step, now automated by multiple agents”, beside a form
+              asking for a user ID and password." />
+    <figcaption>Sign in with the account below. The interface is in English.</figcaption>
   </figure>
+</header>
 
-  <section>
+<section id="abstract">
+  <div class="inner">
     <h2>Abstract</h2>
-    <div class="abstract">
+    <div class="lead">
       <p>Adapting a language model to a specialised domain usually begins with a
       guess: fine-tune, retrieve, or both. KONI-Forge replaces that guess with a
       measurement. Given a collection of documents, it indexes them for retrieval
       and then probes the base model against their content to estimate how much
       of that knowledge the model already holds, and how often it fabricates an
       answer when it does not. The resulting coverage and hallucination rates
-      decide the route: retrieval alone above 70&thinsp;% coverage, supervised
-      fine-tuning below 50&thinsp;%, and a hybrid in between — with a high
-      hallucination rate pulling the verdict down a step regardless of
-      coverage.</p>
+      decide the route — retrieval alone when coverage is high, supervised
+      fine-tuning when it is low, and a hybrid in between.</p>
 
       <p>When the route calls for training, the platform generates
       question–answer pairs from the same documents, filters and augments them,
@@ -279,9 +245,45 @@
       runs on local hardware with a local model provider, so documents need not
       leave the machine.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section>
+<section class="band" id="access">
+  <div class="inner">
+    <h2>Access</h2>
+    <div class="creds">
+      <div class="cred">
+        <span class="lbl">Address</span>
+        <div class="row">
+          <span class="val" id="endpoint">—</span>
+          <button class="copy" data-copy="#endpoint" type="button">Copy</button>
+        </div>
+      </div>
+      <div class="cred">
+        <span class="lbl">User ID</span>
+        <div class="row">
+          <span class="val" id="cred-id">demo</span>
+          <button class="copy" data-copy="#cred-id" type="button">Copy</button>
+        </div>
+      </div>
+      <div class="cred">
+        <span class="lbl">Password</span>
+        <div class="row">
+          <span class="val" id="cred-pw">eacl2026-demo</span>
+          <button class="copy" data-copy="#cred-pw" type="button">Copy</button>
+        </div>
+      </div>
+    </div>
+    <p class="fine">
+      The address changes when the instance restarts; this page is updated to
+      match, so the button above is always current. Everyone signs in with the
+      same account, so treat anything you upload as visible to other visitors.
+    </p>
+  </div>
+</section>
+
+<section>
+  <div class="inner">
     <h2>About this instance</h2>
     <table class="facts">
       <tr><th>Hardware</th>
@@ -291,32 +293,31 @@
       <tr><th>Documents</th>
           <td>Bring your own. English only, as the pipeline runs in English</td></tr>
       <tr><th>Availability</th>
-          <td>Research hardware, not a hosted service. It is switched off between
-              sessions</td></tr>
+          <td>Research hardware, not a hosted service. It is switched off between sessions</td></tr>
       <tr><th>Scope</th>
-          <td>Some features of the full system are disabled in this public
-              build</td></tr>
+          <td>Some features of the full system are disabled in this public build</td></tr>
     </table>
-    <p class="fine" style="margin-top:16px">
+    <p class="fine" style="margin-top:20px">
       A training run started by one visitor queues the next one behind it, so
       please keep runs small.
     </p>
-  </section>
+  </div>
+</section>
 
-  <section id="terms">
-    <h2>Terms of Use</h2>
+<section id="terms">
+  <div class="inner">
+    <h2>Terms of use</h2>
     <div class="terms">
       <p>KONI-Forge is proprietary software. Access to this demonstration is a
       limited, revocable permission to evaluate the system — <b>not a licence to
       the software</b>.</p>
       <ul>
-        <li><span class="yes">Permitted</span> — evaluation for non-commercial
-          research or academic review, using your own documents.</li>
-        <li><span class="no">Not permitted</span> — any commercial use;
-          redistribution or resale of the system or its outputs; reverse
-          engineering; extraction of model weights, source code, prompts, or
-          configuration; automated or bulk access; access to accounts or data
-          other than your own.</li>
+        <li><b>Permitted</b> — evaluation for non-commercial research or academic
+          review, using your own documents.</li>
+        <li><b>Not permitted</b> — any commercial use; redistribution or resale of
+          the system or its outputs; reverse engineering; extraction of model
+          weights, source code, prompts, or configuration; automated or bulk
+          access; access to accounts or data other than your own.</li>
       </ul>
       <p class="fine"><b>What you upload.</b> Documents you submit are processed
       and stored on the host machine and may be visible to other visitors, who
@@ -324,9 +325,11 @@
       sensitive material. The demonstration is provided as is, without warranty,
       and may be modified, suspended, or withdrawn at any time.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer>
+<footer>
+  <div class="inner">
     <p>Source code is not publicly released. Enquiries about licensing or
       technology transfer should be directed to KISTI.</p>
     <p>© 2026 Korea Institute of Science and Technology Information (KISTI),
@@ -334,9 +337,8 @@
       under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
       rel="license noopener" target="_blank">CC&thinsp;BY-NC-ND&thinsp;4.0</a>;
       the software is not covered by that licence.</p>
-  </footer>
-
-</div>
+  </div>
+</footer>
 
 <script>
   // ── The only line that changes when the instance restarts ────────────────
@@ -344,10 +346,11 @@
   // ─────────────────────────────────────────────────────────────────────────
 
   (function () {
-    const go = document.getElementById("go");
-    const dot = document.getElementById("dot");
-    const note = document.getElementById("note");
-    const endpoint = document.getElementById("endpoint2");
+    var go = document.getElementById("go");
+    var navcta = document.getElementById("navcta");
+    var dot = document.getElementById("dot");
+    var note = document.getElementById("note");
+    var endpoint = document.getElementById("endpoint");
 
     if (!DEMO_URL || /^https:\/\/PASTE/i.test(DEMO_URL)) {
       // Never present a dead link as a working one. Saying the system is offline
@@ -355,14 +358,18 @@
       go.textContent = "Demo offline";
       go.classList.add("off");
       go.removeAttribute("href");
+      navcta.textContent = "Offline";
+      navcta.classList.add("off");
+      navcta.removeAttribute("href");
       note.textContent =
         "The system runs on research hardware and is not always on. " +
         "Please check back later, or contact the authors to arrange a session.";
-      if (endpoint) endpoint.textContent = "not running";
+      endpoint.textContent = "not running";
       return;
     }
 
     go.href = DEMO_URL;
+    navcta.href = DEMO_URL;
     if (dot) dot.title = "running";
     try {
       endpoint.textContent = new URL(DEMO_URL).hostname;
@@ -371,14 +378,12 @@
     }
   })();
 
-  // 값을 클릭 한 번으로 가져가게 한다 — 방문자가 실제로 하는 일은 이 셋을
-  // 옮겨 적는 것이다. 클립보드를 못 쓰는 환경(구형·비보안 컨텍스트)에서는
-  // 버튼이 조용히 실패하지 않고 그렇게 말한다.
+  // 값을 클릭 한 번으로 가져가게 한다 — 방문자가 실제로 하는 일은 이 셋을 옮겨
+  // 적는 것이다. 클립보드를 못 쓰는 환경에서는 조용히 실패하지 않고 그렇게 말한다.
   document.querySelectorAll(".copy").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var el = document.querySelector(btn.dataset.copy);
       if (!el) return;
-      var text = el.textContent.trim();
       var done = function (ok) {
         btn.textContent = ok ? "Copied" : "Select it";
         btn.classList.toggle("done", ok);
@@ -388,8 +393,8 @@
         }, 1600);
       };
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(function () { done(true); },
-                                                 function () { done(false); });
+        navigator.clipboard.writeText(el.textContent.trim())
+          .then(function () { done(true); }, function () { done(false); });
       } else {
         done(false);
       }
