@@ -28,9 +28,8 @@
     --line:#e8e8e8;
     --tint:#f7f7f6;       /* 옅은 블록 배경 */
     --link:#1a4fc4;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
-            Helvetica, Arial, "Noto Sans", sans-serif;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif;
+    --mono: "Courier New", Courier, monospace;
   }
 
   *{box-sizing:border-box}
@@ -106,21 +105,6 @@
     padding:2px 8px;
   }
   .box .hint{margin:16px 0 0; font-size:13.5px; color:var(--ink-faint); line-height:1.6}
-
-  /* ── pipeline ─────────────────────────────────────────────── */
-  ol.flow{margin:0; padding:0; list-style:none; counter-reset:step}
-  ol.flow li{
-    counter-increment:step; display:grid;
-    grid-template-columns:30px 1fr; gap:0 16px;
-    padding:15px 0; border-top:1px solid var(--line);
-  }
-  ol.flow li:last-child{border-bottom:1px solid var(--line)}
-  ol.flow li::before{
-    content:counter(step,decimal-leading-zero);
-    font:600 13px/1.7 var(--mono); color:var(--ink-faint);
-  }
-  ol.flow b{display:block; font-size:16.5px; font-weight:650; letter-spacing:-.01em}
-  ol.flow span{display:block; margin-top:3px; font-size:15px; color:var(--ink-soft); line-height:1.6}
 
   /* ── facts table ──────────────────────────────────────────── */
   table.facts{width:100%; border-collapse:collapse; font-size:15.5px}
@@ -230,33 +214,6 @@
         you upload as visible to other visitors.
       </p>
     </div>
-  </section>
-
-  <section>
-    <h2>What happens when you upload documents</h2>
-    <ol class="flow">
-      <li><b>Retrieval indexing</b>
-        <span>Text is extracted page by page, chunked, embedded, and stored with
-        its source file and page number, so later answers can be traced back to
-        where they came from.</span></li>
-      <li><b>Knowledge boundary detection</b>
-        <span>Probe questions are generated from the indexed chunks and put to
-        the base model. Coverage and hallucination rates are reported per
-        category, with categories that have too few probes marked as such rather
-        than scored.</span></li>
-      <li><b>Route selection</b>
-        <span>The measurement — not a preset — decides between retrieval,
-        fine-tuning, and a hybrid of the two.</span></li>
-      <li><b>Dataset generation</b>
-        <span>Question–answer pairs are generated from the documents, weighted
-        toward the categories the diagnosis found weak.</span></li>
-      <li><b>Preprocessing</b>
-        <span>Filtering and augmentation. Each stage is written as its own file,
-        so every step stays inspectable and reversible.</span></li>
-      <li><b>Training and evaluation</b>
-        <span>LoRA, full fine-tuning, or preference training, monitored between
-        rounds; then benchmarked and written up as a report.</span></li>
-    </ol>
   </section>
 
   <section>
