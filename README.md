@@ -41,9 +41,16 @@ Large-scale AI Research Center. All rights reserved.
 
 저작권 © 2026 한국과학기술정보연구원(KISTI) 초거대AI연구센터. 모든 권리 보유.
 
-**This repository is not open-source software.** It is published publicly for
-the sole purpose of hosting the demonstration landing page. No licence is
-granted to copy, modify, distribute, or make derivative works of its contents.
+The **contents of this repository** — the landing page and this README — are
+licensed under
+[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/):
+attribution required, **non-commercial only**, **no derivatives**.
+
+**That licence covers this repository only. It does not cover KONI-Forge.**
+KONI-Forge is proprietary software, is not published here, and all rights to it
+are reserved. Access to the running demonstration is a limited, revocable
+permission to evaluate the system — not a licence to the software. See
+[`LICENSE`](LICENSE) for the full scope statement and terms.
 
 KONI-Forge itself is proprietary software of KISTI and may be subject to the
 Act on the Innovation of National Research and Development of the Republic of
