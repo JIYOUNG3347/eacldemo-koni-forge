@@ -290,7 +290,7 @@
                 form asking for a user ID and password." />
     </div>
     <figcaption id="note">The system runs on our hardware — this page points to it.
-      Sign in with the account below.</figcaption>
+      No sign-in is required.</figcaption>
   </figure>
 </div>
 
@@ -329,6 +329,11 @@
 <section class="band" id="access">
   <div class="inner">
     <h2>Access</h2>
+    <p class="lead" style="text-align:left; max-width:44em; margin:0 0 26px">
+      <b>No sign-in is required.</b> The link above opens the system directly — a
+      demonstration account is assigned to you automatically. Everyone shares
+      that account, so treat anything you upload as visible to other visitors.
+    </p>
     <div class="creds">
       <div class="cred">
         <span class="lbl">Address</span>
@@ -337,25 +342,11 @@
           <button class="copy" data-copy="#endpoint" type="button">Copy</button>
         </div>
       </div>
-      <div class="cred">
-        <span class="lbl">User ID</span>
-        <div class="row">
-          <span class="val" id="cred-id">demo</span>
-          <button class="copy" data-copy="#cred-id" type="button">Copy</button>
-        </div>
-      </div>
-      <div class="cred">
-        <span class="lbl">Password</span>
-        <div class="row">
-          <span class="val" id="cred-pw">eacl2026-demo</span>
-          <button class="copy" data-copy="#cred-pw" type="button">Copy</button>
-        </div>
-      </div>
     </div>
     <p class="fine">
-      The address changes when the instance restarts; this page is updated to
-      match, so the button above is always current. Everyone signs in with the
-      same account, so treat anything you upload as visible to other visitors.
+      The address changes whenever the instance restarts; this page is updated to
+      match, so the link above is always the current one. If the system is
+      offline, the link says so rather than leading nowhere.
     </p>
   </div>
 </section>
@@ -442,7 +433,7 @@
       note.textContent =
         "The system runs on research hardware and is not always on. " +
         "Please check back later, or contact the authors to arrange a session.";
-      endpoint.textContent = "not running";
+      if (endpoint) endpoint.textContent = "not running";
       return;
     }
 
